@@ -123,15 +123,13 @@ app.on("ready", () => {
 		//let refresh_mdp = data.get('passwords').sortBy('date_creation').takeRight(1).value();
 
 		let refresh_mdp = data.get('passwords').value();
-
-		mainWindow.reload();
 		event.reply('reply_add_new_password', refresh_mdp);
 	})
 
 	ipcMain.on('delete_field', function(evt, arg){
 		data.get('passwords').remove({ id: arg }).write();
 		data.update('count', n => n-1).write();
-		mainWindow.reload();
+
 		evt.reply('reply_delete_field', "done");
 	})
 
@@ -142,13 +140,12 @@ app.on("ready", () => {
 		}else{
 			data.get('passwords').find({ id: arg }).assign({ favoris: 0}).write();
 		}
-		mainWindow.reload();
 		evt.reply('reply_favoris_field', 'done');
 	})
 
 	ipcMain.on('modify_field', function(evt, arg){
 
-		mainWindow.reload();
+
 		evt.reply('reply_modify_field', "done");
 	})
 
