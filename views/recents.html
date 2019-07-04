@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>QuickLog</title>
+
+    <!-- external styles -->
+    <link rel="stylesheet" href="../css/lib/bootstrap.css">
+    <link rel="stylesheet" href="../css/lib/uikit.css">
+    <link rel="stylesheet" href="../css/lib/photonkit.css">
+
+    <!-- personal style -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="window">
+        <div class="window-content">
+            <div class="pane-group">
+                <div class="pane-sm sidebar">
+
+                    <nav class="nav-group">
+                        <h5 class="nav-group-title">Personal</h5>
+                        <a href="./passwords.html" class="nav-group-item">
+                            <span class="icon icon-lock"></span>
+                            Passwords
+                        </a>
+                        <a class="nav-group-item active">
+                            <span class="icon icon-clock"></span>
+                            Recents
+                        </a>
+                        <a href="./account.html" class="nav-group-item">
+                            <span class="icon icon-user"></span>
+                            Account
+                        </a>
+                    </nav>
+                    <nav class="nav-group">
+                        <h5 class="nav-group-title">Security</h5>
+                        <a href="./documents.html" class="nav-group-item">
+                            <span class="icon icon-folder"></span>
+                            Documents
+                        </a>
+                    </nav>
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <footer class="toolbar toolbar-footer">
+            <h1 class="title">Recents</h1>
+        </footer>
+
+
+    </div>
+
+    <script>
+    // personal javascript
+    require("../js/recents_script.js");
+
+    // libraries
+    require('bootstrap');
+    require('jquery');
+    require('popper.js');
+    require('uikit');
+    </script>
+</body>
+</html>
