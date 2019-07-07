@@ -119,9 +119,6 @@ app.on("ready", () => {
 		}).write()
 
 		data.update('count', n => n+1).write();
-		//recupération du dernier mdp entré
-		//let refresh_mdp = data.get('passwords').sortBy('date_creation').takeRight(1).value();
-
 		let refresh_mdp = data.get('passwords').value();
 		event.reply('reply_add_new_password', refresh_mdp);
 	})

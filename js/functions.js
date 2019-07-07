@@ -60,7 +60,16 @@ module.exports = {
             //premier td
             let td1 = document.createElement('td');
             let span1 = document.createElement('span');
-            span1.setAttribute('class', 'uk-badge bg-secondary mr-3');
+            if(arg[i].color == "default"){
+                span1.setAttribute('class', 'uk-badge bg-secondary mr-3');
+            }else if(arg[i].color == "red"){
+                span1.setAttribute('class', 'uk-badge bg-danger mr-3');
+            }else if(arg[i].color == "green"){
+                span1.setAttribute('class', 'uk-badge bg-success mr-3');
+            }else if(arg[i].color == "blue"){
+                span1.setAttribute('class', 'uk-badge bg-primary mr-3');
+            }
+
             let i1 = document.createElement('i');
             i1.setAttribute('class', 'fab fa-amazon');
             let plateform1 = document.createTextNode(arg[i].plateform);

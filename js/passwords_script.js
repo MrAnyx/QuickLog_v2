@@ -49,7 +49,7 @@ add_password.addEventListener('click', () => {
     let type = document.getElementById('type_add').value;
     let color = "default";
     if(document.getElementById('color_custom_add').checked){
-        color = document.getElementById('custom_select_add').value;
+        color = document.getElementById('custom_select_add').value.toLowerCase();
     }
     let date_creation = Date.now();
     let last_use = "";
