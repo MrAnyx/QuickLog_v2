@@ -140,7 +140,7 @@ app.on("ready", () => {
 		}else{
 			data.get('passwords').find({ id: arg }).assign({ favoris: 0}).write();
 		}
-		//data.get('passwords').value()
+
 		evt.reply('reply_favoris_field', data.get('passwords').value());
 	})
 

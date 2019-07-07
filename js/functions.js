@@ -4,7 +4,11 @@ const electron = require("electron");
 const ipc = electron.ipcRenderer;
 
 
-module.exports = {  
+function test(){
+    console.log("test");
+}
+
+module.exports = {
 
     init: function(db, type){
         switch(type){
@@ -122,9 +126,6 @@ module.exports = {
         for(let i = 0; i<buttons_delete.length; i++){
             buttons_delete[i].addEventListener('click', function(){
                 ipc.send('delete_field', parseInt(buttons_delete[i].getAttribute('id-database')));
-                ipc.once('reply_delete_field', function(evt, arg){
-                    console.log(arg);
-                })
             });
         }
 
@@ -132,9 +133,6 @@ module.exports = {
         for(let i = 0; i<buttons_favoris.length; i++){
             buttons_favoris[i].addEventListener('click', function(){
                 ipc.send('favoris_field', parseInt(buttons_favoris[i].getAttribute('id-database')));
-                ipc.once('reply_favoris_field', function(evt, arg){
-                    console.log(arg);
-                })
             });
         }
 
@@ -144,9 +142,6 @@ module.exports = {
         for(let i = 0; i<buttons_modify.length; i++){
             buttons_modify[i].addEventListener('click', function(){
                 ipc.send('modify_field', parseInt(buttons_modify[i].getAttribute('id-database')));
-                ipc.once('reply_modify_field', function(evt, arg){
-                    console.log(arg);
-                })
             });
         }
 

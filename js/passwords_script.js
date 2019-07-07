@@ -63,3 +63,15 @@ add_password.addEventListener('click', () => {
         $('#exampleModalScrollable').modal('hide');
     })
 });
+
+ipc.on('reply_delete_field', function(evt, arg){
+    fct.display_liste(arg);
+})
+
+ipc.on('reply_favoris_field', function(evt, arg){
+    fct.display_liste(arg);
+})
+
+ipc.on('reply_modify_field', function(evt, arg){
+    fct.display_liste(arg);
+})
