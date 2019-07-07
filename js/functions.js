@@ -4,7 +4,7 @@ const electron = require("electron");
 const ipc = electron.ipcRenderer;
 
 
-module.exports = {
+module.exports = {  
 
     init: function(db, type){
         switch(type){
@@ -39,13 +39,14 @@ module.exports = {
 
     display_liste: function(arg){
 
-        // const nb_tr = document.getElementsByClassName('liste_full_passwords_tr').length;
-        // for(let i = 0; i<nb_tr; i++){
-        //     document.getElementsByClassName('liste_full_passwords_tr')[i].remove();
-        // }
+        const trs = document.querySelectorAll('.liste_full_passwords_tr');
+
+        trs.forEach(function(el){
+            el.remove();
+        });
+
 
         for(let i = 0; i<arg.length; i++){
-
 
             let tr = document.createElement('tr');
             tr.setAttribute('class','liste_full_passwords_tr');
@@ -114,46 +115,41 @@ module.exports = {
             tr.appendChild(td4);
 
             tabBody.appendChild(tr);
-
-
-            let buttons_delete = document.getElementsByClassName("button-delete");
-            for(let i = 0; i<buttons_delete.length; i++){
-                buttons_delete[i].addEventListener('click', function(){
-                    ipc.send('delete_field', parseInt(buttons_delete[i].getAttribute('id-database')));
-                    ipc.once('reply_delete_field', function(evt, arg){
-                        console.log(arg);
-                    })
-                });
-            }
-
-            let buttons_favoris = document.getElementsByClassName("button-favoris");
-            for(let i = 0; i<buttons_favoris.length; i++){
-                buttons_favoris[i].addEventListener('click', function(){
-                    ipc.send('favoris_field', parseInt(buttons_favoris[i].getAttribute('id-database')));
-                    ipc.once('reply_favoris_field', function(evt, arg){
-                        console.table(arg);
-                    })
-                });
-            }
-
-            let buttons_modify = document.getElementsByClassName("button-modify");
-            for(let i = 0; i<buttons_modify.length; i++){
-                buttons_modify[i].addEventListener('click', function(){
-                    ipc.send('modify_field', parseInt(buttons_modify[i].getAttribute('id-database')));
-                    ipc.once('reply_modify_field', function(evt, arg){
-                        console.table(arg);
-                    })
-                });
-            }
         }
+
+
+        let buttons_delete = document.getElementsByClassName("button-delete");
+        for(let i = 0; i<buttons_delete.length; i++){
+            buttons_delete[i].addEventListener('click', function(){
+                ipc.send('delete_field', parseInt(buttons_delete[i].getAttribute('id-database')));
+                ipc.once('reply_delete_field', function(evt, arg){
+                    console.log(arg);
+                })
+            });
+        }
+
+        let buttons_favoris = document.getElementsByClassName("button-favoris");
+        for(let i = 0; i<buttons_favoris.length; i++){
+            buttons_favoris[i].addEventListener('click', function(){
+                ipc.send('favoris_field', parseInt(buttons_favoris[i].getAttribute('id-database')));
+                ipc.once('reply_favoris_field', function(evt, arg){
+                    console.log(arg);
+                })
+            });
+        }
+
+
+
+        let buttons_modify = document.getElementsByClassName("button-modify");
+        for(let i = 0; i<buttons_modify.length; i++){
+            buttons_modify[i].addEventListener('click', function(){
+                ipc.send('modify_field', parseInt(buttons_modify[i].getAttribute('id-database')));
+                ipc.once('reply_modify_field', function(evt, arg){
+                    console.log(arg);
+                })
+            });
+        }
+
     }
-
-
-
-
-
-
-
-
 
 };

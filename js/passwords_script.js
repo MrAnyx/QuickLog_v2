@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         fct.display_liste(arg.liste_mdp); //also adding the event listeners
 
+
     });
 });
 
@@ -58,8 +59,7 @@ add_password.addEventListener('click', () => {
     let add_new_password = [plateform, url, email, username, password, type, color, date_creation, last_use, nb_use, favoris];
     ipc.send('add_new_password', add_new_password);
     ipc.once('reply_add_new_password', (evt, arg) => {
-        //fct.display_liste(arg);
+        fct.display_liste(arg);
         $('#exampleModalScrollable').modal('hide');
-
     })
 });

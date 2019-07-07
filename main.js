@@ -130,7 +130,7 @@ app.on("ready", () => {
 		data.get('passwords').remove({ id: arg }).write();
 		data.update('count', n => n-1).write();
 
-		evt.reply('reply_delete_field', "done");
+		evt.reply('reply_delete_field', data.get('passwords').value());
 	})
 
 	ipcMain.on('favoris_field', function(evt, arg){
@@ -140,14 +140,19 @@ app.on("ready", () => {
 		}else{
 			data.get('passwords').find({ id: arg }).assign({ favoris: 0}).write();
 		}
-		evt.reply('reply_favoris_field', 'done');
+		//data.get('passwords').value()
+		evt.reply('reply_favoris_field', data.get('passwords').value());
 	})
+
+
 
 	ipcMain.on('modify_field', function(evt, arg){
 
 
-		evt.reply('reply_modify_field', "done");
+		evt.reply('reply_modify_field', data.get('passwords').value());
 	})
+
+
 
 
 });

@@ -2,18 +2,18 @@
   "passwords": [
     {
       "id": 1,
-      "plateform": "2",
-      "url": "2",
-      "email": "2",
-      "username": "2",
-      "password": "c5",
-      "type": "2",
+      "plateform": "1",
+      "url": "1",
+      "email": "1",
+      "username": "1",
+      "password": "c6",
+      "type": "1",
       "color": "default",
-      "date_creation": 1562232582441,
+      "date_creation": 1562503585856,
       "last_use": "",
       "nb_use": 0,
-      "favoris": 0
+      "favoris": 1
     }
   ],
-  "count": 0
+  "count": 1
 }
