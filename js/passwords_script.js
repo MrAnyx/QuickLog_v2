@@ -41,6 +41,8 @@ custom_color.addEventListener('click', () => {
 //pour valider l'ajout du password
 const add_password = document.getElementById('add_password');
 add_password.addEventListener('click', () => {
+    add_password.classList.add("disabled");
+    add_password.disabled = true;
     let plateform = document.getElementById('plateform_add').value;
     let url = document.getElementById('url_add').value;
     let email = document.getElementById('email_add').value;
@@ -60,7 +62,17 @@ add_password.addEventListener('click', () => {
     ipc.send('add_new_password', add_new_password);
     ipc.once('reply_add_new_password', (evt, arg) => {
         fct.display_liste(arg);
+        document.getElementById('plateform_add').value = "";
+        document.getElementById('url_add').value = "";
+        document.getElementById('email_add').value = "";
+        document.getElementById('username_add').value = "";
+        document.getElementById('password_add').value = "";
+        document.getElementById('type_add').value = "";
+        document.getElementById('color_default_add').checked = true;
+        document.getElementById('choix_color').style.display = "none";
         $('#exampleModalScrollable').modal('hide');
+        add_password.classList.remove("disabled");
+        add_password.disabled = false;
     })
 });
 
