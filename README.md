@@ -13,7 +13,7 @@ This is the second version of my password manager. Click [here]() to visit the w
   - aes-js
 
 # Installation
-Download or clone this project with the following command: 
+First, download NodeJS then download or clone this project with the following command: 
 ```bash
 git clone https://github.com/MrAnyx/QuickLog_v2.git
 ```
