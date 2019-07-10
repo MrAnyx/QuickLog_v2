@@ -49,8 +49,10 @@ module.exports = {
             el.remove();
         });
 
+        document.getElementById('nb_passwords_span').innerHTML = arg.nb_passwords
 
-        for(let i = 0; i<arg.length; i++){
+
+        for(let i = 0; i<arg.nb_passwords; i++){
 
             let tr = document.createElement('tr');
             tr.setAttribute('class','liste_full_passwords_tr');
@@ -60,19 +62,19 @@ module.exports = {
             //premier td
             let td1 = document.createElement('td');
             let span1 = document.createElement('span');
-            if(arg[i].color == "default"){
+            if(arg.liste_mdp[i].color == "default"){
                 span1.setAttribute('class', 'uk-badge bg-secondary mr-3');
-            }else if(arg[i].color == "red"){
+            }else if(arg.liste_mdp[i].color == "red"){
                 span1.setAttribute('class', 'uk-badge bg-danger mr-3');
-            }else if(arg[i].color == "green"){
+            }else if(arg.liste_mdp[i].color == "green"){
                 span1.setAttribute('class', 'uk-badge bg-success mr-3');
-            }else if(arg[i].color == "blue"){
+            }else if(arg.liste_mdp[i].color == "blue"){
                 span1.setAttribute('class', 'uk-badge bg-primary mr-3');
             }
 
             let i1 = document.createElement('i');
             i1.setAttribute('class', 'fab fa-amazon');
-            let plateform1 = document.createTextNode(arg[i].plateform);
+            let plateform1 = document.createTextNode(arg.liste_mdp[i].plateform);
             span1.appendChild(i1);
             td1.appendChild(span1);
             td1.appendChild(plateform1);
@@ -80,7 +82,7 @@ module.exports = {
 
             // deuxieme td
             let td2 = document.createElement('td');
-            let appli = document.createTextNode(arg[i].type);
+            let appli = document.createTextNode(arg.liste_mdp[i].type);
             td2.appendChild(appli);
             tr.appendChild(td2);
 
@@ -95,7 +97,7 @@ module.exports = {
             let button1 = document.createElement('button');
             button1.setAttribute('class', 'btn btn-default button-delete');
             button1.setAttribute('uk-tooltip', 'title: Delete; pos: bottom');
-            button1.setAttribute('id-database', arg[i].id);
+            button1.setAttribute('id-database', arg.liste_mdp[i].id);
             let span_button1 = document.createElement('span');
             span_button1.setAttribute('class', 'icon icon-cancel text-danger');
             button1.appendChild(span_button1);
@@ -103,9 +105,9 @@ module.exports = {
             let button2 = document.createElement('button');
             button2.setAttribute('class', 'btn btn-default button-favoris');
             button2.setAttribute('uk-tooltip', 'title: Favorite; pos: bottom');
-            button2.setAttribute('id-database', arg[i].id);
+            button2.setAttribute('id-database', arg.liste_mdp[i].id);
             let span_button2 = document.createElement('span');
-            if(arg[i].favoris == 0){
+            if(arg.liste_mdp[i].favoris == 0){
                 span_button2.setAttribute('class', 'icon icon-heart text-dark');
             }else{
                 span_button2.setAttribute('class', 'icon icon-heart text-danger');
@@ -115,7 +117,7 @@ module.exports = {
             let button3 = document.createElement('button');
             button3.setAttribute('class', 'btn btn-default button-modify');
             button3.setAttribute('uk-tooltip', 'title: Modify; pos: bottom');
-            button3.setAttribute('id-database', arg[i].id);
+            button3.setAttribute('id-database', arg.liste_mdp[i].id);
             let span_button3 = document.createElement('span');
             span_button3.setAttribute('class', 'icon icon-cog text-dark');
             button3.appendChild(span_button3);

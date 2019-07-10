@@ -7,10 +7,10 @@ document.addEventListener("DOMContentLoaded", function() {
     ipc.send("init");
     ipc.once("reply_init", function(evt, arg){
         document.getElementById('username').innerHTML += arg.user_connected;
-        document.getElementById('nb_passwords').innerHTML += arg.liste_mdp.length;
+        document.getElementById('nb_passwords_span').innerHTML = arg.nb_passwords;
         // ici ajouter la boucle for qui crée la liste des mdp
 
-        fct.display_liste(arg.liste_mdp); //also adding the event listeners
+        fct.display_liste(arg); //also adding the event listeners
 
 
     });

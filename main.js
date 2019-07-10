@@ -119,15 +119,21 @@ app.on("ready", () => {
 		}).write()
 
 		data.update('count', n => n+1).write();
-		let refresh_mdp = data.get('passwords').value();
+		let refresh_mdp = {
+			liste_mdp : data.get('passwords').value(),
+			nb_passwords: data.get('count').value()
+		}
 		event.reply('reply_add_new_password', refresh_mdp);
 	})
 
 	ipcMain.on('delete_field', function(evt, arg){
 		data.get('passwords').remove({ id: arg }).write();
 		data.update('count', n => n-1).write();
-
-		evt.reply('reply_delete_field', data.get('passwords').value());
+		let refresh_mdp = {
+			liste_mdp : data.get('passwords').value(),
+			nb_passwords: data.get('count').value()
+		}
+		evt.reply('reply_delete_field', refresh_mdp);
 	})
 
 	ipcMain.on('favoris_field', function(evt, arg){
@@ -138,15 +144,23 @@ app.on("ready", () => {
 			data.get('passwords').find({ id: arg }).assign({ favoris: 0}).write();
 		}
 
-		evt.reply('reply_favoris_field', data.get('passwords').value());
+		let refresh_mdp = {
+			liste_mdp : data.get('passwords').value(),
+			nb_passwords: data.get('count').value()
+		}
+
+		evt.reply('reply_favoris_field', refresh_mdp);
 	})
 
 
 
 	ipcMain.on('modify_field', function(evt, arg){
 
-
-		evt.reply('reply_modify_field', data.get('passwords').value());
+		let refresh_mdp = {
+			liste_mdp : data.get('passwords').value(),
+			nb_passwords: data.get('count').value()
+		}
+		evt.reply('reply_modify_field', refresh_mdp);
 	})
 
 
