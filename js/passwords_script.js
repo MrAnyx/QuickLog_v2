@@ -95,25 +95,66 @@ button_synchronization.addEventListener('click', () => {
 });
 
 ipc.on('reply_synchro', (evt, arg) => {
+    document.getElementById('search_field').value = "";
     fct.display_liste(arg);
 });
 
-
+// button search
 const button_search_mdp = document.getElementById('button_search_mdp');
 button_search_mdp.addEventListener('click', () => {
     let search_mdp = document.getElementById('search_field').value;
     ipc.send('search_mdp', search_mdp);
+    ipc.on('reply_search_mdp', (evt, arg) => {
+        fct.display_liste(arg);
+        //console.log(arg);
+    })
 });
 
+//event listener pour détécter la touche entrée lors de la recherche
 const searchField = document.getElementById('search_field');
 searchField.addEventListener('keyup', (event) => {
     if (event.keyCode == 13) {
-    event.preventDefault();
-    document.getElementById("button_search_mdp").click();
+        event.preventDefault();
+        document.getElementById("button_search_mdp").click();
     }
 });
 
-ipc.on('reply_search_mdp', (evt, arg) => {
-    fct.display_liste(arg);
-    //console.log(arg);
-})
+
+
+
+
+// event listener pour la selection de la couleur pour afficher uniquement la couleur qu'on veut
+const select_color_default = document.getElementById('select_color_default');
+select_color_default.addEventListener('click', () => {
+    ipc.send('select_color_default');
+    ipc.on('reply_select_color_default', (evt, arg) => {
+        fct.display_liste(arg);
+    });
+});
+
+
+const select_color_red = document.getElementById('select_color_red');
+select_color_red.addEventListener('click', () => {
+    ipc.send('select_color_red');
+    ipc.on('reply_select_color_red', (evt, arg) => {
+        fct.display_liste(arg);
+    });
+});
+
+
+const select_color_green = document.getElementById('select_color_green');
+select_color_green.addEventListener('click', () => {
+    ipc.send('select_color_green');
+    ipc.on('reply_select_color_green', (evt, arg) => {
+        fct.display_liste(arg);
+    });
+});
+
+
+const select_color_blue = document.getElementById('select_color_blue');
+select_color_blue.addEventListener('click', () => {
+    ipc.send('select_color_blue');
+    ipc.on('reply_select_color_blue', (evt, arg) => {
+        fct.display_liste(arg);
+    });
+});

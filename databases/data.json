@@ -28,7 +28,7 @@
       "date_creation": 1562835946135,
       "last_use": "",
       "nb_use": 0,
-      "favoris": 0
+      "favoris": 1
     },
     {
       "id": 3,
@@ -43,8 +43,38 @@
       "date_creation": 1562839355398,
       "last_use": "",
       "nb_use": 0,
+      "favoris": 1
+    },
+    {
+      "id": 4,
+      "plateform": "Amazon",
+      "url": "2",
+      "email": "2",
+      "username": "2",
+      "password": "c5",
+      "icon": "fab fa-amazon",
+      "type": "2",
+      "color": "green",
+      "date_creation": 1562845974825,
+      "last_use": "",
+      "nb_use": 0,
+      "favoris": 0
+    },
+    {
+      "id": 5,
+      "plateform": "Twitter",
+      "url": "5",
+      "email": "5",
+      "username": "5",
+      "password": "c2",
+      "icon": "fab fa-twitter",
+      "type": "5",
+      "color": "default",
+      "date_creation": 1562845988664,
+      "last_use": "",
+      "nb_use": 0,
       "favoris": 0
     }
   ],
-  "count": 3
+  "count": 5
 }

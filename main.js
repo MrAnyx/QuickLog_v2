@@ -204,6 +204,67 @@ ipcMain.on('search_mdp', (evt, arg) => {
 })
 
 
+ipcMain.on('select_color_default', (evt, arg) => {
+	let liste = [];
+	let tmp = data.get('passwords').value();
+	for(let i = 0; i<tmp.length; i++){
+		if(tmp[i].color == "default"){
+			liste.push(tmp[i]);
+		}
+	}
+	let refresh_mdp = {
+		liste_mdp: liste,
+		nb_passwords: data.get('count').value()
+	}
+	evt.reply("reply_select_color_default", refresh_mdp);
+})
+
+ipcMain.on('select_color_red', (evt, arg) => {
+	let liste = [];
+	let tmp = data.get('passwords').value();
+	for(let i = 0; i<tmp.length; i++){
+		if(tmp[i].color == "red"){
+			liste.push(tmp[i]);
+		}
+	}
+	let refresh_mdp = {
+		liste_mdp: liste,
+		nb_passwords: data.get('count').value()
+	}
+	evt.reply("reply_select_color_default", refresh_mdp);
+})
+
+ipcMain.on('select_color_green', (evt, arg) => {
+	let liste = [];
+	let tmp = data.get('passwords').value();
+	for(let i = 0; i<tmp.length; i++){
+		if(tmp[i].color == "green"){
+			liste.push(tmp[i]);
+		}
+	}
+	let refresh_mdp = {
+		liste_mdp: liste,
+		nb_passwords: data.get('count').value()
+	}
+	evt.reply("reply_select_color_default", refresh_mdp);
+})
+
+ipcMain.on('select_color_blue', (evt, arg) => {
+	let liste = [];
+	let tmp = data.get('passwords').value();
+	for(let i = 0; i<tmp.length; i++){
+		if(tmp[i].color == "blue"){
+			liste.push(tmp[i]);
+		}
+	}
+	let refresh_mdp = {
+		liste_mdp: liste,
+		nb_passwords: data.get('count').value()
+	}
+	evt.reply("reply_select_color_default", refresh_mdp);
+})
+
+
 
 app.on("window-all-closed", () => {
 	auth.update('connected', el => "").write()
