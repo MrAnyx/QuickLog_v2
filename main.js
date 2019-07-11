@@ -231,7 +231,7 @@ ipcMain.on('select_color_red', (evt, arg) => {
 		liste_mdp: liste,
 		nb_passwords: data.get('count').value()
 	}
-	evt.reply("reply_select_color_default", refresh_mdp);
+	evt.reply("reply_select_color_red", refresh_mdp);
 })
 
 ipcMain.on('select_color_green', (evt, arg) => {
@@ -246,7 +246,7 @@ ipcMain.on('select_color_green', (evt, arg) => {
 		liste_mdp: liste,
 		nb_passwords: data.get('count').value()
 	}
-	evt.reply("reply_select_color_default", refresh_mdp);
+	evt.reply("reply_select_color_green", refresh_mdp);
 })
 
 ipcMain.on('select_color_blue', (evt, arg) => {
@@ -261,7 +261,7 @@ ipcMain.on('select_color_blue', (evt, arg) => {
 		liste_mdp: liste,
 		nb_passwords: data.get('count').value()
 	}
-	evt.reply("reply_select_color_default", refresh_mdp);
+	evt.reply("reply_select_color_blue", refresh_mdp);
 })
 
 
