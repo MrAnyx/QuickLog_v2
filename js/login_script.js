@@ -16,9 +16,9 @@ login_button.addEventListener("click", function(){
 
 
 const loginField = document.getElementById('psw');
-searchField.addEventListener('keyup', (event) => {
+loginField.addEventListener('keyup', (event) => {
     if (event.keyCode == 13) {
         event.preventDefault();
-        document.getElementById("button_search_mdp").click();
+        document.getElementById("login_button").click();
     }
 });

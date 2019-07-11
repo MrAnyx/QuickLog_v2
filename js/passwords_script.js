@@ -1,6 +1,8 @@
 const electron = require("electron");
 const ipc = electron.ipcRenderer;
 const fct = require("./functions.js");
+const fs = require('fs');
+const {dialog} = require('electron').remote;
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -157,4 +159,39 @@ select_color_blue.addEventListener('click', () => {
     ipc.on('reply_select_color_blue', (evt, arg) => {
         fct.display_liste(arg);
     });
+});
+
+
+
+
+
+const button_export = document.getElementById('button_export');
+button_export.addEventListener('click', () => {
+    ipc.send("export_csv");
+    ipc.on("reply_export_csv", (evt, arg) => {
+
+        let content = "id,plateform,url,email,username,password,icon,type,color,date_creation,last_use,nb_use,favoris\n";
+        for(let i = 0; i<arg.length; i++){
+            content+=`${arg[i].id},${arg[i].plateform},${arg[i].url},${arg[i].email},${arg[i].username},${arg[i].password},${arg[i].icon},${arg[i].type},${arg[i].color},${arg[i].date_creation},${arg[i].last_use},${arg[i].nb_use},${arg[i].favoris}\n`;
+        }
+
+
+        dialog.showSaveDialog((filename) => {
+        if(filename === undefined){
+            console.log("The user clicked the button but didn't create a file");
+            return;
+        }
+
+        fs.writeFile(filename, content, (err) => {
+            if (err){
+                console.log("An error occured with the creation of the file "+err.message);
+                return
+            }
+            alert("file saved")
+        })
+        })
+
+    });
+
+
 });

@@ -266,6 +266,14 @@ ipcMain.on('select_color_blue', (evt, arg) => {
 
 
 
+
+ipcMain.on("export_csv", (evt) => {
+	let passwords = data.get('passwords').value();
+	evt.reply("reply_export_csv", passwords);
+})
+
+
+
 app.on("window-all-closed", () => {
 	auth.update('connected', el => "").write()
 	app.quit()
