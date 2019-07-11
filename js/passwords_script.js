@@ -105,6 +105,14 @@ button_search_mdp.addEventListener('click', () => {
     ipc.send('search_mdp', search_mdp);
 });
 
+const searchField = document.getElementById('search_field');
+searchField.addEventListener('keyup', (event) => {
+    if (event.keyCode == 13) {
+    event.preventDefault();
+    document.getElementById("button_search_mdp").click();
+    }
+});
+
 ipc.on('reply_search_mdp', (evt, arg) => {
     fct.display_liste(arg);
     //console.log(arg);
