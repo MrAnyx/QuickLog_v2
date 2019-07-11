@@ -175,20 +175,34 @@ button_export.addEventListener('click', () => {
             content+=`${arg[i].id},${arg[i].plateform},${arg[i].url},${arg[i].email},${arg[i].username},${arg[i].password},${arg[i].icon},${arg[i].type},${arg[i].color},${arg[i].date_creation},${arg[i].last_use},${arg[i].nb_use},${arg[i].favoris}\n`;
         }
 
+        let option1 = {
+            filters: [
+                { name: 'CSV', extensions: ['csv'] },
+            ]
 
-        dialog.showSaveDialog((filename) => {
-        if(filename === undefined){
-            console.log("The user clicked the button but didn't create a file");
-            return;
         }
 
-        fs.writeFile(filename, content, (err) => {
-            if (err){
-                console.log("An error occured with the creation of the file "+err.message);
-                return
+
+        dialog.showSaveDialog(option1, (filename) => {
+            if(filename === undefined){
+                console.log("The user clicked the button but didn't create a file");
+                return;
             }
-            alert("file saved")
-        })
+
+            fs.writeFile(filename, content, (err) => {
+                if (err){
+                    console.log("An error occured with the creation of the file "+err.message);
+                    return
+                }
+                let options2 = {
+                    type: 'info',
+                    buttons: ['Close'],
+                    title: 'File saved',
+                    message: 'The file has been saved successfully'
+                };
+
+                dialog.showMessageBox(options2);
+            })
         })
 
     });

@@ -59,22 +59,7 @@
       "last_use": "",
       "nb_use": 0,
       "favoris": 0
-    },
-    {
-      "id": 5,
-      "plateform": "Twitter",
-      "url": "5",
-      "email": "5",
-      "username": "5",
-      "password": "c2",
-      "icon": "fab fa-twitter",
-      "type": "5",
-      "color": "default",
-      "date_creation": 1562845988664,
-      "last_use": "",
-      "nb_use": 0,
-      "favoris": 0
     }
   ],
-  "count": 5
+  "count": 4
 }
