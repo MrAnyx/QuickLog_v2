@@ -2,49 +2,19 @@
   "passwords": [
     {
       "id": 1,
-      "plateform": "Facebook",
-      "url": "5",
-      "email": "5",
-      "username": "5",
-      "password": "946f",
-      "icon": "fab fa-facebook",
-      "type": "5",
-      "color": "blue",
-      "date_creation": 1562855777685,
-      "last_use": 1562855777685,
-      "nb_use": 0,
-      "favoris": 1
-    },
-    {
-      "id": 2,
-      "plateform": "Twitter",
-      "url": "3",
-      "email": "3",
-      "username": "3",
-      "password": "9469",
-      "icon": "fab fa-twitter",
-      "type": "3",
-      "color": "default",
-      "date_creation": 1562855797985,
-      "last_use": 1562855797985,
-      "nb_use": 0,
-      "favoris": 1
-    },
-    {
-      "id": 3,
-      "plateform": "Instagram",
-      "url": "6",
-      "email": "6",
-      "username": "66",
-      "password": "946c",
-      "icon": "fab fa-instagram",
-      "type": "6",
-      "color": "default",
-      "date_creation": 1562855806185,
-      "last_use": 1562855806185,
+      "plateform": "reddit",
+      "url": "1",
+      "email": "1",
+      "username": "1",
+      "password": "c6",
+      "icon": "fab fa-reddit",
+      "type": "1",
+      "color": "red",
+      "date_creation": 1562861894050,
+      "last_use": 1562861894050,
       "nb_use": 0,
       "favoris": 1
     }
   ],
-  "count": 3
+  "count": 1
 }
