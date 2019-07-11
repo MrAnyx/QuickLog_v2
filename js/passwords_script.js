@@ -175,12 +175,7 @@ button_export.addEventListener('click', () => {
             content+=`${arg[i].id},${arg[i].plateform},${arg[i].url},${arg[i].email},${arg[i].username},${arg[i].password},${arg[i].icon},${arg[i].type},${arg[i].color},${arg[i].date_creation},${arg[i].last_use},${arg[i].nb_use},${arg[i].favoris}\n`;
         }
 
-        let option1 = {
-            filters: [
-                { name: 'CSV', extensions: ['csv'] },
-            ]
-
-        }
+        let option1 = {filters: [{ name: 'CSV', extensions: ['csv'] }]}
 
 
         dialog.showSaveDialog(option1, (filename) => {
@@ -208,4 +203,43 @@ button_export.addEventListener('click', () => {
     });
 
 
+});
+
+
+const button_import = document.getElementById('button_import');
+button_import.addEventListener('click', () => {
+    let options = {
+
+        properties: ['openFile'],
+        filter: [
+            { name: 'CSV', extensions: ['csv'] }
+        ]
+
+    }
+    dialog.showOpenDialog(options, function (file) {
+        if (file !== undefined) {
+
+
+            fs.readFile(file.toString(), 'utf8', function(err, contents) {
+                liste = contents.split('\n');
+                liste.pop();
+                liste.shift();
+
+                ipc.send("import_mdp", liste);
+                ipc.on("reply_import_mdp", (evt, arg) => {
+                    fct.display_liste(arg);
+                    let options3 = {
+                        type: 'info',
+                        buttons: ['Close'],
+                        title: 'File imported',
+                        message: 'The file has been imported successfully'
+                    };
+
+                    dialog.showMessageBox(options3);
+
+                })
+
+            });
+        }
+    });
 });

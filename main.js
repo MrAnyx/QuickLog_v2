@@ -272,6 +272,36 @@ ipcMain.on("export_csv", (evt) => {
 	evt.reply("reply_export_csv", passwords);
 })
 
+ipcMain.on("import_mdp", (evt, arg) => {
+	data.set('passwords', []).write();
+	data.set('count', arg.length).write();
+	let tmp;
+	for(let i = 0; i<arg.length; i++){
+		tmp = arg[i].split(",");
+		data.get('passwords').push({
+			id: tmp[0],
+			plateform: tmp[1],
+			url: tmp[2],
+			email: tmp[3],
+			username: tmp[4],
+			password: fct.crypt(tmp[5]),
+			icon: tmp[6],
+			type: tmp[7],
+			color: tmp[8],
+			date_creation: tmp[9],
+			last_use: tmp[10],
+			nb_use: tmp[11],
+			favoris: tmp[12]
+		}).write()
+	}
+
+	let import_mdp = {
+		liste_mdp: data.get('passwords').value(),
+		nb_passwords: data.get('count').value()
+	}
+	evt.reply("reply_import_mdp", import_mdp)
+})
+
 
 
 app.on("window-all-closed", () => {
