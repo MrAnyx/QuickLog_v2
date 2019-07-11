@@ -279,7 +279,7 @@ ipcMain.on("import_mdp", (evt, arg) => {
 	for(let i = 0; i<arg.length; i++){
 		tmp = arg[i].split(",");
 		data.get('passwords').push({
-			id: tmp[0],
+			id: parseInt(tmp[0]),
 			plateform: tmp[1],
 			url: tmp[2],
 			email: tmp[3],
@@ -288,10 +288,10 @@ ipcMain.on("import_mdp", (evt, arg) => {
 			icon: tmp[6],
 			type: tmp[7],
 			color: tmp[8],
-			date_creation: tmp[9],
-			last_use: tmp[10],
-			nb_use: tmp[11],
-			favoris: tmp[12]
+			date_creation: parseInt(tmp[9]),
+			last_use: parseInt(tmp[10]),
+			nb_use: parseInt(tmp[11]),
+			favoris: parseInt(tmp[12])
 		}).write()
 	}
 

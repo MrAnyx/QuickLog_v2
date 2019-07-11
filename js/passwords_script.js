@@ -56,7 +56,7 @@ add_password.addEventListener('click', () => {
         color = document.getElementById('custom_select_add').value.toLowerCase();
     }
     let date_creation = Date.now();
-    let last_use = "";
+    let last_use = Date.now();
     let nb_use = 0;
     let favoris = 0;
 
