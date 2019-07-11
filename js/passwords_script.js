@@ -102,5 +102,9 @@ ipc.on('reply_synchro', (evt, arg) => {
 const button_search_mdp = document.getElementById('button_search_mdp');
 button_search_mdp.addEventListener('click', () => {
     let search_mdp = document.getElementById('search_field').value;
-    console.log(search_mdp);
+    ipc.send('search_mdp', search_mdp);
 });
+
+ipc.on('reply_search_mdp', (evt, arg) => {
+    fct.display_liste(arg);
+})

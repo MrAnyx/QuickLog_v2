@@ -188,6 +188,14 @@ ipcMain.on('synchro', (evt) => {
 
 })
 
+ipcMain.on('search_mdp', (evt, arg) => {
+	let search_mdp = {
+		liste_mdp: data.get('passwords').find({plateform: arg}).value(),
+		nb_passwords: data.get('count').value()
+	}
+	evt.reply('reply_search_mdp', search_mdp);
+})
+
 
 
 app.on("window-all-closed", () => {
