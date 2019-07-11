@@ -1,4 +1,19 @@
 {
-  "passwords": [],
-  "count": 0
+  "passwords": [
+    {
+      "id": 1,
+      "plateform": "1",
+      "url": "1",
+      "email": "1",
+      "username": "1",
+      "password": "c6",
+      "type": "1",
+      "color": "default",
+      "date_creation": 1562829078772,
+      "last_use": "",
+      "nb_use": 0,
+      "favoris": 0
+    }
+  ],
+  "count": 1
 }
