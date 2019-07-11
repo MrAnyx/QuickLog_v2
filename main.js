@@ -178,6 +178,16 @@ ipcMain.on('modify_field', function(evt, arg){
 	evt.reply('reply_modify_field', refresh_mdp);
 })
 
+ipcMain.on('synchro', (evt) => {
+	let refresh_mdp = {
+		liste_mdp : data.get('passwords').value(),
+		nb_passwords: data.get('count').value()
+	}
+	console.log("done");
+	evt.reply('reply_synchro', refresh_mdp);
+
+})
+
 
 
 app.on("window-all-closed", () => {

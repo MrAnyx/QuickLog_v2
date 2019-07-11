@@ -1,4 +1,20 @@
 {
-  "passwords": [],
-  "count": 0
+  "passwords": [
+    {
+      "id": 1,
+      "plateform": "facebook",
+      "url": "3",
+      "email": "3",
+      "username": "3",
+      "password": "c4",
+      "icon": "fab fa-facebook",
+      "type": "3",
+      "color": "blue",
+      "date_creation": 1562833843639,
+      "last_use": "",
+      "nb_use": 0,
+      "favoris": 0
+    }
+  ],
+  "count": 1
 }

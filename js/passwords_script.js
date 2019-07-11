@@ -78,12 +78,29 @@ add_password.addEventListener('click', () => {
 
 ipc.on('reply_delete_field', function(evt, arg){
     fct.display_liste(arg);
-})
+});
 
 ipc.on('reply_favoris_field', function(evt, arg){
     fct.display_liste(arg);
-})
+});
 
 ipc.on('reply_modify_field', function(evt, arg){
     fct.display_liste(arg);
-})
+});
+
+
+const button_synchronization = document.getElementById('synchronization');
+button_synchronization.addEventListener('click', () => {
+    ipc.send('synchro');
+});
+
+ipc.on('reply_synchro', (evt, arg) => {
+    fct.display_liste(arg);
+});
+
+
+const button_search_mdp = document.getElementById('button_search_mdp');
+button_search_mdp.addEventListener('click', () => {
+    let search_mdp = document.getElementById('search_field').value;
+    console.log(search_mdp);
+});
