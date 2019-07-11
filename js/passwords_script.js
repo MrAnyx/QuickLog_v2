@@ -107,4 +107,5 @@ button_search_mdp.addEventListener('click', () => {
 
 ipc.on('reply_search_mdp', (evt, arg) => {
     fct.display_liste(arg);
+    //console.log(arg);
 })

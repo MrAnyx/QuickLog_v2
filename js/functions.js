@@ -52,7 +52,8 @@ module.exports = {
         document.getElementById('nb_passwords_span').innerHTML = arg.nb_passwords
 
 
-        for(let i = 0; i<arg.nb_passwords; i++){
+        // je dois mettre le liste_mdp.length car quand on cherche un mdp, on en a forcement moins que le count
+        for(let i = 0; i<arg.liste_mdp.length; i++){
 
             let tr = document.createElement('tr');
             tr.setAttribute('class','liste_full_passwords_tr');

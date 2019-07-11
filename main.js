@@ -189,8 +189,15 @@ ipcMain.on('synchro', (evt) => {
 })
 
 ipcMain.on('search_mdp', (evt, arg) => {
+	let liste_mdp = [];
+	let tmp = data.get('passwords').value();
+	for(let i = 0; i<tmp.length; i++){
+		if(tmp[i].plateform == arg){
+			liste_mdp.push(tmp[i]);
+		}
+	}
 	let search_mdp = {
-		liste_mdp: data.get('passwords').find({plateform: arg}).value(),
+		liste_mdp: liste_mdp,
 		nb_passwords: data.get('count').value()
 	}
 	evt.reply('reply_search_mdp', search_mdp);
