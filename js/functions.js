@@ -73,7 +73,7 @@ module.exports = {
             }
 
             let i1 = document.createElement('i');
-            i1.setAttribute('class', 'fab fa-amazon');
+            i1.setAttribute('class', arg.liste_mdp[i].icon);
             let plateform1 = document.createTextNode(arg.liste_mdp[i].plateform);
             span1.appendChild(i1);
             td1.appendChild(span1);

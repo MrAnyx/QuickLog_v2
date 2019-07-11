@@ -107,7 +107,14 @@ ipcMain.on('add_new_password', function(event, arg){
 	let nb_use = arg[9];
 	let favoris = arg[10];
 
-	
+	let tmp = brands.get('brands').find({name: plateform.toLowerCase()}).value();
+	let icon;
+	if(tmp == null){
+		icon = "";
+	}else{
+		icon = tmp.icon;
+
+	}
 
 	let id = data.get('count').value()+1;
 	data.get('passwords').push({
@@ -117,6 +124,7 @@ ipcMain.on('add_new_password', function(event, arg){
 		email: email,
 		username: username,
 		password: fct.crypt(password),
+		icon: icon,
 		type: type,
 		color: color,
 		date_creation: date_creation,
