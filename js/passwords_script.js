@@ -203,7 +203,7 @@ select_color_blue.addEventListener('click', () => {
 
 
 
-
+// event lors de l'export
 const button_export = document.getElementById('button_export');
 button_export.addEventListener('click', () => {
     ipc.send("export_csv");
@@ -244,7 +244,7 @@ button_export.addEventListener('click', () => {
 
 });
 
-
+// event lors de l'import
 const button_import = document.getElementById('button_import');
 button_import.addEventListener('click', () => {
     let options = {

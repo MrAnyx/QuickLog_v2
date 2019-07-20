@@ -10,9 +10,11 @@ const FileSync = require('lowdb/adapters/FileSync')
 const dataJson = new FileSync('databases/data.json')
 const authJson = new FileSync('databases/auth.json')
 const brandsJson = new FileSync('databases/brands.json')
+const optionsJson = new FileSync('databases/options.json')
 const data = low(dataJson)
 const auth = low(authJson)
 const brands = low(brandsJson)
+const options = low(optionsJson)
 
 //my functions
 const fct = require('./js/functions.js')
@@ -21,6 +23,7 @@ const fct = require('./js/functions.js')
 //initialization of the json files for the first time (it doesn't affect the file once it exists)
 fct.init(auth, 'auth')
 fct.init(data, 'data')
+fct.init(options, 'options')
 
 
 app.on("ready", () => {
@@ -144,8 +147,22 @@ ipcMain.on('add_new_password', function(event, arg){
 ipcMain.on('delete_field', function(evt, arg){
 	data.get('passwords').remove({ id: arg }).write();
 	data.update('count', n => n-1).write();
+	let color = options.get('select').value()
+	let liste_delete_pass = []
+	if(color != "none"){
+		let delete_pass = data.get('passwords').value()
+
+		for(let i = 0; i<delete_pass.length; i++){
+			if(delete_pass[i].color == color){
+				liste_delete_pass.push(delete_pass[i]);
+			}
+		}
+	}else{
+		liste_delete_pass = data.get('passwords').value()
+	}
+
 	let refresh_mdp = {
-		liste_mdp : data.get('passwords').value(),
+		liste_mdp : liste_delete_pass,
 		nb_passwords: data.get('count').value()
 	}
 	evt.reply('reply_delete_field', refresh_mdp);
@@ -158,9 +175,22 @@ ipcMain.on('favoris_field', function(evt, arg){
 	}else{
 		data.get('passwords').find({ id: arg }).assign({ favoris: 0}).write();
 	}
+	let color = options.get('select').value()
+	let liste_favoris_pass = []
+	if(color != "none"){
+		let favoris_pass = data.get('passwords').value()
+
+		for(let i = 0; i<favoris_pass.length; i++){
+			if(favoris_pass[i].color == color){
+				liste_favoris_pass.push(favoris_pass[i]);
+			}
+		}
+	}else{
+		liste_favoris_pass = data.get('passwords').value()
+	}
 
 	let refresh_mdp = {
-		liste_mdp : data.get('passwords').value(),
+		liste_mdp : liste_favoris_pass,
 		nb_passwords: data.get('count').value()
 	}
 
@@ -170,15 +200,29 @@ ipcMain.on('favoris_field', function(evt, arg){
 
 
 ipcMain.on('modify_field', function(evt, arg){
+	let color = options.get('select').value()
+	let liste_modify_pass = []
+	if(color != "none"){
+		let modify_pass = data.get('passwords').value()
+
+		for(let i = 0; i<modify_pass.length; i++){
+			if(modify_pass[i].color == color){
+				liste_modify_pass.push(modify_pass[i]);
+			}
+		}
+	}else{
+		liste_modify_pass = data.get('passwords').value()
+	}
 
 	let refresh_mdp = {
-		liste_mdp : data.get('passwords').value(),
+		liste_mdp : liste_modify_pass,
 		nb_passwords: data.get('count').value()
 	}
 	evt.reply('reply_modify_field', refresh_mdp);
 })
 
 ipcMain.on('synchro', (evt) => {
+	options.update("select", n => "none").write()
 	let refresh_mdp = {
 		liste_mdp : data.get('passwords').value(),
 		nb_passwords: data.get('count').value()
@@ -205,6 +249,7 @@ ipcMain.on('search_mdp', (evt, arg) => {
 
 
 ipcMain.on('select_color_default', (evt, arg) => {
+	options.update("select", n => "default").write()
 	let liste = [];
 	let tmp = data.get('passwords').value();
 	for(let i = 0; i<tmp.length; i++){
@@ -220,6 +265,7 @@ ipcMain.on('select_color_default', (evt, arg) => {
 })
 
 ipcMain.on('select_color_red', (evt, arg) => {
+	options.update("select", n => "red").write()
 	let liste = [];
 	let tmp = data.get('passwords').value();
 	for(let i = 0; i<tmp.length; i++){
@@ -235,6 +281,7 @@ ipcMain.on('select_color_red', (evt, arg) => {
 })
 
 ipcMain.on('select_color_green', (evt, arg) => {
+	options.update("select", n => "green").write()
 	let liste = [];
 	let tmp = data.get('passwords').value();
 	for(let i = 0; i<tmp.length; i++){
@@ -250,6 +297,7 @@ ipcMain.on('select_color_green', (evt, arg) => {
 })
 
 ipcMain.on('select_color_blue', (evt, arg) => {
+	options.update("select", n => "blue").write()
 	let liste = [];
 	let tmp = data.get('passwords').value();
 	for(let i = 0; i<tmp.length; i++){
@@ -306,5 +354,6 @@ ipcMain.on("import_mdp", (evt, arg) => {
 
 app.on("window-all-closed", () => {
 	auth.update('connected', el => "").write()
+	options.update('select', n => "none").write()
 	app.quit()
 });

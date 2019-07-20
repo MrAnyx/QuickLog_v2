@@ -18,6 +18,9 @@ module.exports = {
             case 'data':
             db.defaults({ passwords: [], count: 0}).write()
             break;
+            case 'options':
+            db.defaults({ select: "none" }).write()
+            break;
         }
     },
 
