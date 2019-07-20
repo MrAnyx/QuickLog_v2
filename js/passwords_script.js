@@ -211,7 +211,7 @@ button_export.addEventListener('click', () => {
             content+=`${arg[i].id},${arg[i].plateform},${arg[i].url},${arg[i].email},${arg[i].username},${arg[i].password},${arg[i].icon},${arg[i].type},${arg[i].color},${arg[i].date_creation},${arg[i].last_use},${arg[i].nb_use},${arg[i].favoris}\n`;
         }
 
-        let option1 = {filters: [{ name: 'CSV', extensions: ['csv'] }]}
+        let option1 = {filters: [{ name: 'Fichier QuickLog', extensions: ['csvql'] }]}
 
 
         dialog.showSaveDialog(option1, (filename) => {
@@ -247,9 +247,7 @@ button_import.addEventListener('click', () => {
     let options = {
 
         properties: ['openFile'],
-        filter: [
-            { name: 'CSV', extensions: ['csv'] }
-        ]
+        filters: [{ name: 'Fichier QuickLog', extensions: ['csvql'] }]
 
     }
     dialog.showOpenDialog(options, function (file) {

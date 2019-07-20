@@ -6,14 +6,14 @@
       "url": "1",
       "email": "1",
       "username": "1",
-      "password": "c6",
+      "password": "946b",
       "icon": "",
       "type": "1",
       "color": "default",
       "date_creation": 1563635207275,
       "last_use": 1563635207275,
       "nb_use": 0,
-      "favoris": 0
+      "favoris": 1
     },
     {
       "id": 4,
@@ -21,30 +21,15 @@
       "url": "2",
       "email": "2",
       "username": "2",
-      "password": "c5",
+      "password": "9468",
       "icon": "",
       "type": "2",
       "color": "default",
       "date_creation": 1563635543707,
       "last_use": 1563635543707,
       "nb_use": 0,
-      "favoris": 0
-    },
-    {
-      "id": 5,
-      "plateform": "3",
-      "url": "3",
-      "email": "3",
-      "username": "3",
-      "password": "c4",
-      "icon": "",
-      "type": "3",
-      "color": "green",
-      "date_creation": 1563635735763,
-      "last_use": 1563635735763,
-      "nb_use": 0,
-      "favoris": 0
+      "favoris": 1
     }
   ],
-  "count": 5
+  "count": 2
 }
