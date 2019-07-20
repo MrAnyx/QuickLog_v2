@@ -50,9 +50,6 @@ add_password.addEventListener('click', () => {
     document.getElementById('button_generate').classList.add("btn-secondary")
     document.getElementById('button_generate').classList.remove("btn-danger")
 
-
-
-
     add_password.classList.add("disabled");
     add_password.disabled = true;
     let plateform = document.getElementById('plateform_add').value;
@@ -283,7 +280,7 @@ button_import.addEventListener('click', () => {
     });
 });
 
-
+// button generate pour le mdp
 const button_generate = document.getElementById('button_generate');
 button_generate.addEventListener('click', () => {
     let generate_password = Math.random().toString(36).substring(2, 15);
@@ -293,3 +290,24 @@ button_generate.addEventListener('click', () => {
     document.execCommand('copy');
     document.getElementById('password_add').type = "password"
 });
+
+
+// detect when the modal is closed to reset the form
+$('#exampleModalScrollable').on('hide.bs.modal', function (e) {
+    document.getElementById('plateform_add').value = "";
+    document.getElementById('url_add').value = "";
+    document.getElementById('email_add').value = "";
+    document.getElementById('username_add').value = "";
+    document.getElementById('password_add').value = "";
+    document.getElementById('type_add').value = "";
+    document.getElementById('color_default_add').checked = true;
+    document.getElementById('choix_color').style.display = "none";
+
+    const input_form_modal = document.querySelectorAll(".input-form-modal");
+    input_form_modal.forEach(function(el){
+        el.classList.remove("is-invalid")
+    })
+
+    document.getElementById('button_generate').classList.add("btn-secondary")
+    document.getElementById('button_generate').classList.remove("btn-danger")
+})
