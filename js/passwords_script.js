@@ -13,8 +13,6 @@ document.addEventListener("DOMContentLoaded", function() {
         // ici ajouter la boucle for qui crée la liste des mdp
 
         fct.display_liste(arg); //also adding the event listeners
-
-
     });
 });
 
@@ -48,6 +46,11 @@ add_password.addEventListener('click', () => {
     input_form_modal.forEach(function(el){
         el.classList.remove("is-invalid")
     })
+
+    document.getElementById('button_generate').classList.add("btn-secondary")
+    document.getElementById('button_generate').classList.remove("btn-danger")
+
+
 
 
     add_password.classList.add("disabled");
