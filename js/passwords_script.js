@@ -42,6 +42,9 @@ custom_color.addEventListener('click', () => {
 const add_password = document.getElementById('add_password');
 add_password.addEventListener('click', () => {
 
+
+    document.getElementById('loading_add').style.display = "inline-block";
+
     const input_form_modal = document.querySelectorAll(".input-form-modal");
     input_form_modal.forEach(function(el){
         el.classList.remove("is-invalid")
@@ -93,6 +96,8 @@ add_password.addEventListener('click', () => {
         });
         add_password.classList.remove("disabled");
         add_password.disabled = false;
+        document.getElementById('loading_add').style.display = "none";
+
     }else{
 
         let add_new_password = [plateform, url, email, username, password, type, color, date_creation, last_use, nb_use, favoris];
@@ -110,6 +115,8 @@ add_password.addEventListener('click', () => {
             $('#exampleModalScrollable').modal('hide');
             add_password.classList.remove("disabled");
             add_password.disabled = false;
+            document.getElementById('loading_add').style.display = "none";
+
         })
     }
 });
@@ -126,7 +133,6 @@ ipc.on('reply_modify_field', function(evt, arg){
     fct.display_liste(arg);
 });
 
-console.log(fct.uniqid());
 
 const button_synchronization = document.getElementById('synchronization');
 button_synchronization.addEventListener('click', () => {

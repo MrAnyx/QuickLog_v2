@@ -162,3 +162,21 @@ html, body{
 .uk-table thead tr th{
     font-size: 14px;
 }
+
+
+@keyframes rotation {
+    from{
+        transform: rotate(0deg);
+    }
+
+    to{
+        transform: rotate(180deg);
+    }
+}
+
+#loading_add{
+    animation-duration: 1.2s;
+    animation-name: rotation;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
