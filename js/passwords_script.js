@@ -43,6 +43,13 @@ custom_color.addEventListener('click', () => {
 //pour valider l'ajout du password
 const add_password = document.getElementById('add_password');
 add_password.addEventListener('click', () => {
+
+    const input_form_modal = document.querySelectorAll(".input-form-modal");
+    input_form_modal.forEach(function(el){
+        el.classList.remove("is-invalid")
+    })
+
+
     add_password.classList.add("disabled");
     add_password.disabled = true;
     let plateform = document.getElementById('plateform_add').value;
@@ -60,22 +67,51 @@ add_password.addEventListener('click', () => {
     let nb_use = 0;
     let favoris = 0;
 
-    let add_new_password = [plateform, url, email, username, password, type, color, date_creation, last_use, nb_use, favoris];
-    ipc.send('add_new_password', add_new_password);
-    ipc.once('reply_add_new_password', (evt, arg) => {
-        fct.display_liste(arg);
-        document.getElementById('plateform_add').value = "";
-        document.getElementById('url_add').value = "";
-        document.getElementById('email_add').value = "";
-        document.getElementById('username_add').value = "";
-        document.getElementById('password_add').value = "";
-        document.getElementById('type_add').value = "";
-        document.getElementById('color_default_add').checked = true;
-        document.getElementById('choix_color').style.display = "none";
-        $('#exampleModalScrollable').modal('hide');
+    liste_invalid = []
+
+    // vérification des champs entrés
+    if(plateform == ""){
+        liste_invalid.push("plateform_add")
+    }if(url == ""){
+        liste_invalid.push("url_add")
+    }if(email == ""){
+        liste_invalid.push("email_add")
+    }if(username == ""){
+        liste_invalid.push("username_add")
+    }if(password == ""){
+        liste_invalid.push("password_add")
+        document.getElementById('button_generate').classList.remove("btn-secondary")
+        document.getElementById('button_generate').classList.add("btn-danger")
+
+    }if(type == ""){
+        liste_invalid.push("type_add")
+    }
+
+    if(liste_invalid.length != 0){
+        liste_invalid.forEach(function(item){
+            document.getElementById(item).classList.add("is-invalid")
+        });
         add_password.classList.remove("disabled");
         add_password.disabled = false;
-    })
+    }else{
+
+        let add_new_password = [plateform, url, email, username, password, type, color, date_creation, last_use, nb_use, favoris];
+        ipc.send('add_new_password', add_new_password);
+        ipc.once('reply_add_new_password', (evt, arg) => {
+            fct.display_liste(arg);
+            document.getElementById('plateform_add').value = "";
+            document.getElementById('url_add').value = "";
+            document.getElementById('email_add').value = "";
+            document.getElementById('username_add').value = "";
+            document.getElementById('password_add').value = "";
+            document.getElementById('type_add').value = "";
+            document.getElementById('color_default_add').checked = true;
+            document.getElementById('choix_color').style.display = "none";
+            $('#exampleModalScrollable').modal('hide');
+            add_password.classList.remove("disabled");
+            add_password.disabled = false;
+        })
+    }
 });
 
 ipc.on('reply_delete_field', function(evt, arg){
@@ -168,7 +204,7 @@ select_color_blue.addEventListener('click', () => {
 const button_export = document.getElementById('button_export');
 button_export.addEventListener('click', () => {
     ipc.send("export_csv");
-    ipc.on("reply_export_csv", (evt, arg) => {
+    ipc.once("reply_export_csv", (evt, arg) => {
 
         let content = "id,plateform,url,email,username,password,icon,type,color,date_creation,last_use,nb_use,favoris\n";
         for(let i = 0; i<arg.length; i++){
@@ -226,7 +262,7 @@ button_import.addEventListener('click', () => {
                 liste.shift();
 
                 ipc.send("import_mdp", liste);
-                ipc.on("reply_import_mdp", (evt, arg) => {
+                ipc.once("reply_import_mdp", (evt, arg) => {
                     fct.display_liste(arg);
                     let options3 = {
                         type: 'info',
