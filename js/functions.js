@@ -43,6 +43,11 @@ module.exports = {
         return decryptedText;
     },
 
+    uniqid: function(){
+        var d = new Date();
+        return d.getTime();
+    },
+
 
     display_liste: function(arg){
 
@@ -150,8 +155,6 @@ module.exports = {
                 ipc.send('favoris_field', parseInt(buttons_favoris[i].getAttribute('id-database')));
             });
         }
-
-
 
         let buttons_modify = document.getElementsByClassName("button-modify");
         for(let i = 0; i<buttons_modify.length; i++){

@@ -119,7 +119,7 @@ ipcMain.on('add_new_password', function(event, arg){
 
 	}
 
-	let id = data.get('count').value()+1;
+	let id = fct.uniqid();
 	data.get('passwords').push({
 		id: id,
 		plateform: plateform,

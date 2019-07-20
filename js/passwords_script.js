@@ -126,6 +126,7 @@ ipc.on('reply_modify_field', function(evt, arg){
     fct.display_liste(arg);
 });
 
+console.log(fct.uniqid());
 
 const button_synchronization = document.getElementById('synchronization');
 button_synchronization.addEventListener('click', () => {
