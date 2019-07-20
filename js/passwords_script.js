@@ -249,4 +249,8 @@ const button_generate = document.getElementById('button_generate');
 button_generate.addEventListener('click', () => {
     let generate_password = Math.random().toString(36).substring(2, 15);
     document.getElementById('password_add').value = generate_password;
+    document.getElementById('password_add').type = "text"
+    document.getElementById("password_add").select()
+    document.execCommand('copy');
+    document.getElementById('password_add').type = "password"
 });

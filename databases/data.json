@@ -2,19 +2,34 @@
   "passwords": [
     {
       "id": 1,
-      "plateform": "reddit",
-      "url": "1",
-      "email": "1",
-      "username": "1",
-      "password": "c6",
-      "icon": "fab fa-reddit",
-      "type": "1",
+      "plateform": "instagram",
+      "url": "5",
+      "email": "5",
+      "username": "5",
+      "password": "946f",
+      "icon": "fab fa-instagram",
+      "type": "5",
       "color": "red",
-      "date_creation": 1562861894050,
-      "last_use": 1562861894050,
+      "date_creation": 1563121347721,
+      "last_use": 1563121347721,
       "nb_use": 0,
-      "favoris": 1
+      "favoris": 0
+    },
+    {
+      "id": 2,
+      "plateform": "facebook",
+      "url": "test",
+      "email": "test",
+      "username": "test",
+      "password": "8338e6a3",
+      "icon": "fab fa-facebook",
+      "type": "test",
+      "color": "blue",
+      "date_creation": 1563631137331,
+      "last_use": 1563631137331,
+      "nb_use": 0,
+      "favoris": 0
     }
   ],
-  "count": 1
+  "count": 2
 }
