@@ -112,7 +112,7 @@ add_password.addEventListener('click', () => {
             document.getElementById('type_add').value = "";
             document.getElementById('color_default_add').checked = true;
             document.getElementById('choix_color').style.display = "none";
-            $('#exampleModalScrollable').modal('hide');
+            $('#modal_add').modal('hide');
             add_password.classList.remove("disabled");
             add_password.disabled = false;
             document.getElementById('loading_add').style.display = "none";
@@ -130,7 +130,9 @@ ipc.on('reply_favoris_field', function(evt, arg){
 });
 
 ipc.on('reply_modify_field', function(evt, arg){
-    fct.display_liste(arg);
+    // fct.display_liste(arg);
+    $('#modal_modify').modal('show');
+    console.log(arg);
 });
 
 
@@ -298,7 +300,7 @@ button_generate.addEventListener('click', () => {
 
 
 // detect when the modal is closed to reset the form
-$('#exampleModalScrollable').on('hide.bs.modal', function (e) {
+$('#modal_add').on('hide.bs.modal', function (e) {
     document.getElementById('plateform_add').value = "";
     document.getElementById('url_add').value = "";
     document.getElementById('email_add').value = "";

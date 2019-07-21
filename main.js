@@ -200,25 +200,31 @@ ipcMain.on('favoris_field', function(evt, arg){
 
 
 ipcMain.on('modify_field', function(evt, arg){
-	let color = options.get('select').value()
-	let liste_modify_pass = []
-	if(color != "none"){
-		let modify_pass = data.get('passwords').value()
 
-		for(let i = 0; i<modify_pass.length; i++){
-			if(modify_pass[i].color == color){
-				liste_modify_pass.push(modify_pass[i]);
-			}
-		}
-	}else{
-		liste_modify_pass = data.get('passwords').value()
-	}
+	console.log(arg);
+	let tmp = data.get('passwords').find({ id: arg }).value();
 
-	let refresh_mdp = {
-		liste_mdp : liste_modify_pass,
-		nb_passwords: data.get('count').value()
-	}
-	evt.reply('reply_modify_field', refresh_mdp);
+
+	// let color = options.get('select').value()
+	// let liste_modify_pass = []
+	// if(color != "none"){
+	// 	let modify_pass = data.get('passwords').value()
+	//
+	// 	for(let i = 0; i<modify_pass.length; i++){
+	// 		if(modify_pass[i].color == color){
+	// 			liste_modify_pass.push(modify_pass[i]);
+	// 		}
+	// 	}
+	// }else{
+	// 	liste_modify_pass = data.get('passwords').value()
+	// }
+	//
+	// let refresh_mdp = {
+	// 	liste_mdp : liste_modify_pass,
+	// 	nb_passwords: data.get('count').value()
+	// }
+	// evt.reply('reply_modify_field', refresh_mdp);
+	evt.reply('reply_modify_field', tmp);
 })
 
 ipcMain.on('synchro', (evt) => {
