@@ -174,6 +174,7 @@ modify_password.addEventListener('click', () => {
 ipc.on("reply_update_password", (evt, arg) => {
     $('#modal_modify').modal('hide');
     fct.display_liste(arg);
+    // ajou le reset des valeurs pour la sécurité
 });
 
 
