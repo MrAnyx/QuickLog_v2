@@ -112,6 +112,7 @@ add_password.addEventListener('click', () => {
             document.getElementById('type_add').value = "";
             document.getElementById('color_default_add').checked = true;
             document.getElementById('choix_color').style.display = "none";
+            document.getElementById('custom_select_add').value = "Red";
             $('#modal_add').modal('hide');
             add_password.classList.remove("disabled");
             add_password.disabled = false;
@@ -130,9 +131,61 @@ ipc.on('reply_favoris_field', function(evt, arg){
 });
 
 ipc.on('reply_modify_field', function(evt, arg){
-    // fct.display_liste(arg);
     $('#modal_modify').modal('show');
-    console.log(arg);
+
+    document.getElementById('modify_password').setAttribute('id-database', arg.id);
+
+    document.getElementById('plateform_modify').value = arg.plateform
+    document.getElementById('url_modify').value = arg.url
+    document.getElementById('email_modify').value = arg.email
+    document.getElementById('username_modify').value = arg.username
+    document.getElementById('password_modify').value = fct.decrypt(arg.password)
+    document.getElementById('type_modify').value = arg.type
+
+    if(arg.color == "default"){
+        document.getElementById('color_default_modify').checked = true;
+    }else{
+        document.getElementById('choix_color_modify').style.display = "inline-block";
+        document.getElementById('color_custom_modify').checked = true;
+        document.getElementById('custom_select_modify').value = fct.title(arg.color);
+    }
+});
+
+const modify_password = document.getElementById('modify_password');
+modify_password.addEventListener('click', () => {
+    let color = "default";
+    if(document.getElementById('color_custom_modify').checked){
+        color = document.getElementById('custom_select_modify').value;
+    }
+
+    let update_mdp = {
+        // car l'id est un string donc il faut le convertir en int
+        id: parseInt(document.getElementById('modify_password').getAttribute("id-database")),
+        plateform: document.getElementById('plateform_modify').value,
+        url: document.getElementById('url_modify').value,
+        email: document.getElementById('email_modify').value,
+        username: document.getElementById('username_modify').value,
+        password: fct.crypt(document.getElementById('password_modify').value),
+        color: color,
+        type: document.getElementById('type_modify').value,
+    }
+    ipc.send("update_password", update_mdp);
+});
+ipc.on("reply_update_password", (evt, arg) => {
+    $('#modal_modify').modal('hide');
+    fct.display_liste(arg);
+});
+
+
+
+// pour l'affichage du select pour les couleurs pour le modal modify
+const default_color_modify = document.getElementById('color_default_modify');
+default_color_modify.addEventListener('click', () => {
+    document.getElementById('choix_color_modify').style.display = "none";
+});
+const custom_color_modify = document.getElementById('color_custom_modify');
+custom_color_modify.addEventListener('click', () => {
+    document.getElementById('choix_color_modify').style.display = "inline-block";
 });
 
 
@@ -309,6 +362,7 @@ $('#modal_add').on('hide.bs.modal', function (e) {
     document.getElementById('type_add').value = "";
     document.getElementById('color_default_add').checked = true;
     document.getElementById('choix_color').style.display = "none";
+    document.getElementById('custom_select_add').value = "Red";
 
     const input_form_modal = document.querySelectorAll(".input-form-modal");
     input_form_modal.forEach(function(el){

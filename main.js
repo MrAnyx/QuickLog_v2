@@ -200,32 +200,47 @@ ipcMain.on('favoris_field', function(evt, arg){
 
 
 ipcMain.on('modify_field', function(evt, arg){
+	let get_mdp = data.get('passwords').find({ id: arg }).value();
+	evt.reply('reply_modify_field', get_mdp);
+});
+ipcMain.on("update_password", (evt, arg) => {
+	data.get('passwords').find({ id: arg.id }).assign({
+		plateform: arg.plateform,
+		url: arg.url,
+		email: arg.email,
+		username: arg.username,
+		password: arg.password,
+		type: arg.type,
+		color: arg.color.toLowerCase()
+	}).write();
 
-	console.log(arg);
-	let tmp = data.get('passwords').find({ id: arg }).value();
 
 
-	// let color = options.get('select').value()
-	// let liste_modify_pass = []
-	// if(color != "none"){
-	// 	let modify_pass = data.get('passwords').value()
-	//
-	// 	for(let i = 0; i<modify_pass.length; i++){
-	// 		if(modify_pass[i].color == color){
-	// 			liste_modify_pass.push(modify_pass[i]);
-	// 		}
-	// 	}
-	// }else{
-	// 	liste_modify_pass = data.get('passwords').value()
-	// }
-	//
-	// let refresh_mdp = {
-	// 	liste_mdp : liste_modify_pass,
-	// 	nb_passwords: data.get('count').value()
-	// }
-	// evt.reply('reply_modify_field', refresh_mdp);
-	evt.reply('reply_modify_field', tmp);
-})
+
+	let color = options.get('select').value();
+	let liste_modify_pass = [];
+	if(color != "none"){
+		let modify_pass = data.get('passwords').value();
+
+		for(let i = 0; i<modify_pass.length; i++){
+			if(modify_pass[i].color == color){
+				liste_modify_pass.push(modify_pass[i]);
+			}
+		}
+	}else{
+		liste_modify_pass = data.get('passwords').value();
+	}
+
+	let refresh_mdp = {
+		liste_mdp : liste_modify_pass,
+		nb_passwords: data.get('count').value()
+	}
+
+	evt.reply("reply_update_password", refresh_mdp);
+
+
+
+});
 
 ipcMain.on('synchro', (evt) => {
 	options.update("select", n => "none").write()
