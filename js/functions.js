@@ -3,11 +3,6 @@ const aesjs = require('aes-js')
 const electron = require("electron");
 const ipc = electron.ipcRenderer;
 
-
-function test(){
-    console.log("test");
-}
-
 module.exports = {
 
     init: function(db, type){
