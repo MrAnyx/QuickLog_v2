@@ -11,6 +11,7 @@ const dataJson = new FileSync('databases/data.json')
 const authJson = new FileSync('databases/auth.json')
 const brandsJson = new FileSync('databases/brands.json')
 const optionsJson = new FileSync('databases/options.json')
+
 const data = low(dataJson)
 const auth = low(authJson)
 const brands = low(brandsJson)
