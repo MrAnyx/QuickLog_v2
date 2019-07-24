@@ -3,6 +3,7 @@ const ipc = electron.ipcRenderer;
 const fct = require("./functions.js");
 const fs = require('fs');
 const {dialog} = require('electron').remote;
+const shell = require('electron').shell;
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -171,11 +172,16 @@ ipc.on('reply_select_mdp', (evt, arg) => {
 
     document.getElementById('plateform_select').innerHTML = arg.plateform
     document.getElementById('url_select').innerHTML = arg.url
+    document.getElementById('url_select').setAttribute("href", arg.url)
+
     document.getElementById('email_select').innerHTML = arg.email
     document.getElementById('username_select').innerHTML = arg.username
     document.getElementById('clipboard').setAttribute("password", arg.password)
-
-
+})
+// pour ouvrir le lien vers le navigateur par defaut
+const open_link = document.getElementById('url_select')
+open_link.addEventListener("click", () => {
+    shell.openExternal(open_link.innerHTML)
 })
 
 const modify_password = document.getElementById('modify_password');

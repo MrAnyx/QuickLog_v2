@@ -186,3 +186,10 @@ html, body{
     position: absolute;
     right: 5px;
 }
+
+#url_select{
+    color: #009aff;
+}
+#url_select:hover{
+    color: #034e80;
+}
