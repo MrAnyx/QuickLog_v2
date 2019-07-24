@@ -341,7 +341,7 @@ button_import.addEventListener('click', () => {
     });
 });
 
-// button generate pour le mdp
+// button generate pour le mdp dans ajout
 const button_generate = document.getElementById('button_generate');
 button_generate.addEventListener('click', () => {
     let generate_password = Math.random().toString(36).substring(2, 15);
@@ -351,6 +351,18 @@ button_generate.addEventListener('click', () => {
     document.execCommand('copy');
     document.getElementById('password_add').type = "password"
 });
+
+// button generate pour le mdp dans modify
+const button_generate_modify = document.getElementById('button_generate_modify');
+button_generate_modify.addEventListener('click', () => {
+    let regenerate_password = Math.random().toString(36).substring(2, 15);
+    document.getElementById('password_modify').value = regenerate_password;
+    document.getElementById('password_modify').type = "text"
+    document.getElementById("password_modify").select()
+    document.execCommand('copy');
+    document.getElementById('password_modify').type = "password"
+});
+
 
 
 // detect when the modal is closed to reset the form
