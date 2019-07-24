@@ -18,8 +18,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 const clipboard = document.getElementById('clipboard');
 clipboard.addEventListener("click", function(){
+
     const el = document.createElement('input');
-    el.value = "password";
+    el.value = fct.decrypt(document.getElementById('clipboard').getAttribute("password"));
+    console.log(fct.decrypt(document.getElementById('clipboard').getAttribute("password")));
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
@@ -169,6 +171,9 @@ ipc.on('reply_select_mdp', (evt, arg) => {
 
     document.getElementById('plateform_select').innerHTML = arg.plateform
     document.getElementById('url_select').innerHTML = arg.url
+    document.getElementById('email_select').innerHTML = arg.email
+    document.getElementById('username_select').innerHTML = arg.username
+    document.getElementById('clipboard').setAttribute("password", arg.password)
 
 
 })

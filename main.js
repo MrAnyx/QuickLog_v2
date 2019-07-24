@@ -353,7 +353,7 @@ ipcMain.on("import_mdp", (evt, arg) => {
 			url: tmp[2],
 			email: tmp[3],
 			username: tmp[4],
-			password: fct.crypt(tmp[5]),
+			password: tmp[5],
 			icon: tmp[6],
 			type: tmp[7],
 			color: tmp[8],
