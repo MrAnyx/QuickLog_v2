@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
 const clipboard = document.getElementById('clipboard');
 clipboard.addEventListener("click", function(){
     const el = document.createElement('input');
-    el.value = "test";
+    el.value = "password";
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
@@ -151,6 +151,27 @@ ipc.on('reply_modify_field', function(evt, arg){
     }
 });
 
+ipc.on('reply_select_mdp', (evt, arg) => {
+    //display details
+    document.getElementById('details').style.opacity = 1
+    //reset the color
+    let liste_color = ["bg-secondary", "bg-danger", "bg-success", "bg-primary"]
+    liste_color.forEach((el) => {
+        document.getElementById('color_select').classList.remove(el)
+    })
+    //set the color
+    let dic_color = {"default": "bg-secondary", "red": "bg-danger", "green": "bg-success", "blue": "bg-primary"}
+    document.getElementById('color_select').classList.add(dic_color[arg.color])
+
+    //display icon
+    document.getElementById('icon_select').setAttribute("class", "")
+    document.getElementById('icon_select').setAttribute("class", `text-light ${arg.icon}`)
+
+    document.getElementById('plateform_select').innerHTML = arg.plateform
+
+
+})
+
 const modify_password = document.getElementById('modify_password');
 modify_password.addEventListener('click', () => {
     let color = "default";
@@ -189,7 +210,7 @@ custom_color_modify.addEventListener('click', () => {
     document.getElementById('choix_color_modify').style.display = "inline-block";
 });
 
-
+//bouton de synchro
 const button_synchronization = document.getElementById('synchronization');
 button_synchronization.addEventListener('click', () => {
     ipc.send('synchro');
@@ -197,6 +218,7 @@ button_synchronization.addEventListener('click', () => {
 
 ipc.on('reply_synchro', (evt, arg) => {
     document.getElementById('search_field').value = "";
+    document.getElementById('details').style.opacity = 0
     fct.display_liste(arg);
 });
 
@@ -207,7 +229,6 @@ button_search_mdp.addEventListener('click', () => {
     ipc.send('search_mdp', search_mdp);
     ipc.on('reply_search_mdp', (evt, arg) => {
         fct.display_liste(arg);
-        //console.log(arg);
     })
 });
 
@@ -225,6 +246,7 @@ searchField.addEventListener('keyup', (event) => {
 
 
 // event listener pour la selection de la couleur pour afficher uniquement la couleur qu'on veut
+// selection de la couleur neutre
 const select_color_default = document.getElementById('select_color_default');
 select_color_default.addEventListener('click', () => {
     ipc.send('select_color_default');
@@ -233,7 +255,7 @@ select_color_default.addEventListener('click', () => {
     });
 });
 
-
+// selection de la couleur rouge
 const select_color_red = document.getElementById('select_color_red');
 select_color_red.addEventListener('click', () => {
     ipc.send('select_color_red');
@@ -242,7 +264,7 @@ select_color_red.addEventListener('click', () => {
     });
 });
 
-
+// selection de la couleur verte
 const select_color_green = document.getElementById('select_color_green');
 select_color_green.addEventListener('click', () => {
     ipc.send('select_color_green');
@@ -251,7 +273,7 @@ select_color_green.addEventListener('click', () => {
     });
 });
 
-
+// selection de la couleur bleue
 const select_color_blue = document.getElementById('select_color_blue');
 select_color_blue.addEventListener('click', () => {
     ipc.send('select_color_blue');

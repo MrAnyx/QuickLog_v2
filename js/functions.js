@@ -60,6 +60,7 @@ module.exports = {
 
             let tr = document.createElement('tr');
             tr.setAttribute('class','liste_full_passwords_tr');
+            // tr.setAttribute("id-database", arg.liste_mdp[i].id)
             let tabBody = document.getElementById('liste_full_passwords');
 
 
@@ -126,11 +127,20 @@ module.exports = {
             span_button3.setAttribute('class', 'icon icon-cog text-dark');
             button3.appendChild(span_button3);
 
+            let button4 = document.createElement('button');
+            button4.setAttribute('class', 'btn btn-default button-select');
+            button4.setAttribute('uk-tooltip', 'title: Select; pos: bottom');
+            button4.setAttribute('id-database', arg.liste_mdp[i].id);
+            let span_button4 = document.createElement('span');
+            span_button4.setAttribute('class', 'icon icon-right-open');
+            button4.appendChild(span_button4);
+
             div_option.appendChild(button1);
             div_option.appendChild(button2);
             div_option.appendChild(button3);
 
             td4.appendChild(div_option);
+            td4.appendChild(button4)
             tr.appendChild(td4);
 
             tabBody.appendChild(tr);
@@ -155,6 +165,13 @@ module.exports = {
         for(let i = 0; i<buttons_modify.length; i++){
             buttons_modify[i].addEventListener('click', function(){
                 ipc.send('modify_field', parseInt(buttons_modify[i].getAttribute('id-database')));
+            });
+        }
+
+        let button_select = document.getElementsByClassName("button-select");
+        for(let i = 0; i<button_select.length; i++){
+            button_select[i].addEventListener('click', function(){
+                ipc.send('select_mdp', parseInt(button_select[i].getAttribute('id-database')));
             });
         }
 

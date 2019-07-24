@@ -180,3 +180,9 @@ html, body{
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
+
+
+.button-select{
+    position: absolute;
+    right: 5px;
+}

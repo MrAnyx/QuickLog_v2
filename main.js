@@ -249,7 +249,6 @@ ipcMain.on('synchro', (evt) => {
 		liste_mdp : data.get('passwords').value(),
 		nb_passwords: data.get('count').value()
 	}
-	console.log("done");
 	evt.reply('reply_synchro', refresh_mdp);
 
 })
@@ -370,6 +369,11 @@ ipcMain.on("import_mdp", (evt, arg) => {
 		nb_passwords: data.get('count').value()
 	}
 	evt.reply("reply_import_mdp", import_mdp)
+})
+
+ipcMain.on("select_mdp", (evt, arg) => {
+	let selected_mdp = data.get('passwords').find({ id: arg }).value()
+	evt.reply("reply_select_mdp", selected_mdp)
 })
 
 
