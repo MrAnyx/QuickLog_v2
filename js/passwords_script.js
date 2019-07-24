@@ -168,6 +168,7 @@ ipc.on('reply_select_mdp', (evt, arg) => {
     document.getElementById('icon_select').setAttribute("class", `text-light ${arg.icon}`)
 
     document.getElementById('plateform_select').innerHTML = arg.plateform
+    document.getElementById('url_select').innerHTML = arg.url
 
 
 })
