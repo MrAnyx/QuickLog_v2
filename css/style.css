@@ -187,8 +187,17 @@ html, body{
     right: 5px;
 }
 
+.overflow-url{
+    width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
 #url_select{
     color: #009aff;
+
 }
 #url_select:hover{
     color: #034e80;
