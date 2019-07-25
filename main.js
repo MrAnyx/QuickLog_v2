@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron")
 const path = require('path')
 const url = require('url')
+const sha256 = require('sha256')
+
 
 // lowDB
 const low = require('lowdb')
@@ -51,7 +53,7 @@ app.on("ready", () => {
 ipcMain.on("auth", function(event, arg){
 	let username = arg[0];
 	let password = arg[1];
-	let login = auth.get('users').find({ username: username, password: fct.crypt(password) }).value()
+	let login = auth.get('users').find({ username: username, password: sha256(password) }).value()
 	if(login != null){
 		auth.update('connected', el => username).write()
 		event.reply("response", login);
@@ -79,8 +81,7 @@ ipcMain.on("register", function(event, arg){
 	}else if(password == "" || password_conf == ""){
 		dialog.showErrorBox("Registration", "Your password is empty, please try again");
 	}else{
-		let id = auth.get('count').value()+1;
-		auth.get('users').push({ id: id, username: username, password: fct.crypt(password)}).write()
+		auth.get('users').push({ id: fct.uniqid(), username: username, password: sha256(password)}).write()
 		auth.update('count', n => n+1).write();
 		event.reply("reply_register");
 	}
