@@ -14,22 +14,7 @@
       "last_use": 1563969418092,
       "nb_use": 0,
       "favoris": 0
-    },
-    {
-      "id": 1563969457677,
-      "plateform": "Facebook",
-      "url": "https://www.facebook.com",
-      "email": "2ptitigre@gmail.com",
-      "username": "MrAnyx",
-      "password": "a532f7e69141d099a749",
-      "icon": "fab fa-facebook",
-      "type": "Social",
-      "color": "blue",
-      "date_creation": 1563969457676,
-      "last_use": 1563969457676,
-      "nb_use": 0,
-      "favoris": 0
     }
   ],
-  "count": 2
+  "count": 1
 }

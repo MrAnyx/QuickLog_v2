@@ -127,6 +127,7 @@ add_password.addEventListener('click', () => {
 
 ipc.on('reply_delete_field', function(evt, arg){
     fct.display_liste(arg);
+    //document.getElementById('details').style.opacity = 0;
 });
 
 ipc.on('reply_favoris_field', function(evt, arg){
