@@ -149,6 +149,10 @@ ipcMain.on('add_new_password', function(event, arg){
 ipcMain.on('delete_field', function(evt, arg){
 	data.get('passwords').remove({ id: arg }).write();
 	data.update('count', n => n-1).write();
+	let del = false
+	if(arg == options.get('select').value()){
+		del = true
+	}
 	let search = options.get('search').value()
 	let liste_delete_pass = []
 	if(search != ""){
@@ -165,6 +169,7 @@ ipcMain.on('delete_field', function(evt, arg){
 
 	let refresh_mdp = {
 		liste_mdp : liste_delete_pass,
+		statut: del,
 		nb_passwords: data.get('count').value()
 	}
 	evt.reply('reply_delete_field', refresh_mdp);
@@ -198,7 +203,6 @@ ipcMain.on('favoris_field', function(evt, arg){
 
 	evt.reply('reply_favoris_field', refresh_mdp);
 })
-
 
 
 ipcMain.on('modify_field', function(evt, arg){
@@ -247,6 +251,8 @@ ipcMain.on("update_password", (evt, arg) => {
 
 ipcMain.on('synchro', (evt) => {
 	options.update("search", n => "").write()
+	options.update("select", n => 0).write()
+
 	let refresh_mdp = {
 		liste_mdp : data.get('passwords').value(),
 		nb_passwords: data.get('count').value()
@@ -380,6 +386,7 @@ ipcMain.on("import_mdp", (evt, arg) => {
 
 ipcMain.on("select_mdp", (evt, arg) => {
 	let selected_mdp = data.get('passwords').find({ id: arg }).value()
+	options.update('select', n => arg).write()
 	evt.reply("reply_select_mdp", selected_mdp)
 })
 
@@ -388,5 +395,6 @@ ipcMain.on("select_mdp", (evt, arg) => {
 app.on("window-all-closed", () => {
 	auth.update('connected', el => "").write()
 	options.update('search', n => "").write()
+	options.update('select', n => 0).write()
 	app.quit()
 });

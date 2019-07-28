@@ -14,7 +14,7 @@ module.exports = {
             db.defaults({ passwords: [], count: 0}).write()
             break;
             case 'options':
-            db.defaults({ search: "" }).write()
+            db.defaults({ search: "", select: 0 }).write()
             break;
         }
     },
