@@ -208,7 +208,7 @@ modify_password.addEventListener('click', () => {
 ipc.on("reply_update_password", (evt, arg) => {
     $('#modal_modify').modal('hide');
     fct.display_liste(arg);
-    // ajou le reset des valeurs pour la sécurité
+    // ajout le reset des valeurs pour la sécurité
 });
 
 
@@ -246,7 +246,7 @@ button_search_field.addEventListener('keyup', (event) => {
     })
 });
 
-//event listener pour détécter la touche entrée lors de la recherche
+// // event listener pour détécter la touche entrée lors de la recherche
 // const searchField = document.getElementById('search_field');
 // searchField.addEventListener('keyup', (event) => {
 //     if (event.keyCode == 13) {
@@ -259,42 +259,42 @@ button_search_field.addEventListener('keyup', (event) => {
 
 
 
-// event listener pour la selection de la couleur pour afficher uniquement la couleur qu'on veut
-// selection de la couleur neutre
-const select_color_default = document.getElementById('select_color_default');
-select_color_default.addEventListener('click', () => {
-    ipc.send('select_color_default');
-    ipc.on('reply_select_color_default', (evt, arg) => {
-        fct.display_liste(arg);
-    });
-});
-
-// selection de la couleur rouge
-const select_color_red = document.getElementById('select_color_red');
-select_color_red.addEventListener('click', () => {
-    ipc.send('select_color_red');
-    ipc.on('reply_select_color_red', (evt, arg) => {
-        fct.display_liste(arg);
-    });
-});
-
-// selection de la couleur verte
-const select_color_green = document.getElementById('select_color_green');
-select_color_green.addEventListener('click', () => {
-    ipc.send('select_color_green');
-    ipc.on('reply_select_color_green', (evt, arg) => {
-        fct.display_liste(arg);
-    });
-});
-
-// selection de la couleur bleue
-const select_color_blue = document.getElementById('select_color_blue');
-select_color_blue.addEventListener('click', () => {
-    ipc.send('select_color_blue');
-    ipc.on('reply_select_color_blue', (evt, arg) => {
-        fct.display_liste(arg);
-    });
-});
+// // event listener pour la selection de la couleur pour afficher uniquement la couleur qu'on veut
+// // selection de la couleur neutre
+// const select_color_default = document.getElementById('select_color_default');
+// select_color_default.addEventListener('click', () => {
+//     ipc.send('select_color_default');
+//     ipc.on('reply_select_color_default', (evt, arg) => {
+//         fct.display_liste(arg);
+//     });
+// });
+//
+// // selection de la couleur rouge
+// const select_color_red = document.getElementById('select_color_red');
+// select_color_red.addEventListener('click', () => {
+//     ipc.send('select_color_red');
+//     ipc.on('reply_select_color_red', (evt, arg) => {
+//         fct.display_liste(arg);
+//     });
+// });
+//
+// // selection de la couleur verte
+// const select_color_green = document.getElementById('select_color_green');
+// select_color_green.addEventListener('click', () => {
+//     ipc.send('select_color_green');
+//     ipc.on('reply_select_color_green', (evt, arg) => {
+//         fct.display_liste(arg);
+//     });
+// });
+//
+// // selection de la couleur bleue
+// const select_color_blue = document.getElementById('select_color_blue');
+// select_color_blue.addEventListener('click', () => {
+//     ipc.send('select_color_blue');
+//     ipc.on('reply_select_color_blue', (evt, arg) => {
+//         fct.display_liste(arg);
+//     });
+// });
 
 
 
@@ -302,6 +302,7 @@ select_color_blue.addEventListener('click', () => {
 // event lors de l'export
 const button_export = document.getElementById('button_export');
 button_export.addEventListener('click', () => {
+    console.log("click");
     ipc.send("export_csv");
     ipc.once("reply_export_csv", (evt, arg) => {
 

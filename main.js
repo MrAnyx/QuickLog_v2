@@ -219,19 +219,39 @@ ipcMain.on("update_password", (evt, arg) => {
 	let color = options.get('select').value();
 	let search = options.get('search').value();
 	let liste_modify_pass = [];
-	if(color != "none" || search != ""){
+	let listeFinale = [];
+	if(color != "none"){
 		let modify_pass = data.get('passwords').value();
 		for(let i = 0; i<modify_pass.length; i++){
-			if(modify_pass[i].color == color && modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
+			if(modify_pass[i].color == color){
 				liste_modify_pass.push(modify_pass[i]);
 			}
 		}
+		if(search != ""){
+			for(let i = 0; i<liste_modify_pass.length; i++){
+				if(liste_modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
+					listeFinale.push(liste_modify_pass[i])
+				}
+			}
+		}else{
+			listeFinale = liste_modify_pass;
+		}
 	}else{
 		liste_modify_pass = data.get('passwords').value();
+
+		if(search != ""){
+			for(let i = 0; i<liste_modify_pass.length; i++){
+				if(liste_modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
+					listeFinale.push(liste_modify_pass[i])
+				}
+			}
+		}else{
+			listeFinale = liste_modify_pass;
+		}
 	}
 
 	let refresh_mdp = {
-		liste_mdp : liste_modify_pass,
+		liste_mdp : listeFinale,
 		nb_passwords: data.get('count').value()
 	}
 
