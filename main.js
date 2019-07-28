@@ -149,13 +149,13 @@ ipcMain.on('add_new_password', function(event, arg){
 ipcMain.on('delete_field', function(evt, arg){
 	data.get('passwords').remove({ id: arg }).write();
 	data.update('count', n => n-1).write();
-	let color = options.get('select').value()
+	let search = options.get('search').value()
 	let liste_delete_pass = []
-	if(color != "none"){
+	if(search != ""){
 		let delete_pass = data.get('passwords').value()
 
 		for(let i = 0; i<delete_pass.length; i++){
-			if(delete_pass[i].color == color){
+			if(delete_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
 				liste_delete_pass.push(delete_pass[i]);
 			}
 		}
@@ -177,13 +177,13 @@ ipcMain.on('favoris_field', function(evt, arg){
 	}else{
 		data.get('passwords').find({ id: arg }).assign({ favoris: 0}).write();
 	}
-	let color = options.get('select').value()
+	let search = options.get('search').value()
 	let liste_favoris_pass = []
-	if(color != "none"){
+	if(search != ""){
 		let favoris_pass = data.get('passwords').value()
 
 		for(let i = 0; i<favoris_pass.length; i++){
-			if(favoris_pass[i].color == color){
+			if(favoris_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
 				liste_favoris_pass.push(favoris_pass[i]);
 			}
 		}
@@ -215,43 +215,22 @@ ipcMain.on("update_password", (evt, arg) => {
 		type: arg.type,
 		color: arg.color.toLowerCase()
 	}).write();
-
-	let color = options.get('select').value();
 	let search = options.get('search').value();
 	let liste_modify_pass = [];
-	let listeFinale = [];
-	if(color != "none"){
+	if(search != ""){
 		let modify_pass = data.get('passwords').value();
 		for(let i = 0; i<modify_pass.length; i++){
-			if(modify_pass[i].color == color){
+			if(modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
 				liste_modify_pass.push(modify_pass[i]);
 			}
 		}
-		if(search != ""){
-			for(let i = 0; i<liste_modify_pass.length; i++){
-				if(liste_modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
-					listeFinale.push(liste_modify_pass[i])
-				}
-			}
-		}else{
-			listeFinale = liste_modify_pass;
-		}
 	}else{
-		liste_modify_pass = data.get('passwords').value();
+		liste_modify_pass = data.get('passwords').value()
 
-		if(search != ""){
-			for(let i = 0; i<liste_modify_pass.length; i++){
-				if(liste_modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
-					listeFinale.push(liste_modify_pass[i])
-				}
-			}
-		}else{
-			listeFinale = liste_modify_pass;
-		}
 	}
 
 	let refresh_mdp = {
-		liste_mdp : listeFinale,
+		liste_mdp : liste_modify_pass,
 		nb_passwords: data.get('count').value()
 	}
 
@@ -259,7 +238,7 @@ ipcMain.on("update_password", (evt, arg) => {
 });
 
 ipcMain.on('synchro', (evt) => {
-	options.update("select", n => "none").write()
+	options.update("search", n => "").write()
 	let refresh_mdp = {
 		liste_mdp : data.get('passwords').value(),
 		nb_passwords: data.get('count').value()
@@ -288,70 +267,70 @@ ipcMain.on('search_mdp', (evt, arg) => {
 	evt.reply('reply_search_mdp', search_mdp);
 })
 
-
-ipcMain.on('select_color_default', (evt, arg) => {
-	options.update("select", n => "default").write()
-	let liste = [];
-	let tmp = data.get('passwords').value();
-	for(let i = 0; i<tmp.length; i++){
-		if(tmp[i].color == "default"){
-			liste.push(tmp[i]);
-		}
-	}
-	let refresh_mdp = {
-		liste_mdp: liste,
-		nb_passwords: data.get('count').value()
-	}
-	evt.reply("reply_select_color_default", refresh_mdp);
-})
-
-ipcMain.on('select_color_red', (evt, arg) => {
-	options.update("select", n => "red").write()
-	let liste = [];
-	let tmp = data.get('passwords').value();
-	for(let i = 0; i<tmp.length; i++){
-		if(tmp[i].color == "red"){
-			liste.push(tmp[i]);
-		}
-	}
-	let refresh_mdp = {
-		liste_mdp: liste,
-		nb_passwords: data.get('count').value()
-	}
-	evt.reply("reply_select_color_red", refresh_mdp);
-})
-
-ipcMain.on('select_color_green', (evt, arg) => {
-	options.update("select", n => "green").write()
-	let liste = [];
-	let tmp = data.get('passwords').value();
-	for(let i = 0; i<tmp.length; i++){
-		if(tmp[i].color == "green"){
-			liste.push(tmp[i]);
-		}
-	}
-	let refresh_mdp = {
-		liste_mdp: liste,
-		nb_passwords: data.get('count').value()
-	}
-	evt.reply("reply_select_color_green", refresh_mdp);
-})
-
-ipcMain.on('select_color_blue', (evt, arg) => {
-	options.update("select", n => "blue").write()
-	let liste = [];
-	let tmp = data.get('passwords').value();
-	for(let i = 0; i<tmp.length; i++){
-		if(tmp[i].color == "blue"){
-			liste.push(tmp[i]);
-		}
-	}
-	let refresh_mdp = {
-		liste_mdp: liste,
-		nb_passwords: data.get('count').value()
-	}
-	evt.reply("reply_select_color_blue", refresh_mdp);
-})
+//
+// ipcMain.on('select_color_default', (evt, arg) => {
+// 	options.update("select", n => "default").write()
+// 	let liste = [];
+// 	let tmp = data.get('passwords').value();
+// 	for(let i = 0; i<tmp.length; i++){
+// 		if(tmp[i].color == "default"){
+// 			liste.push(tmp[i]);
+// 		}
+// 	}
+// 	let refresh_mdp = {
+// 		liste_mdp: liste,
+// 		nb_passwords: data.get('count').value()
+// 	}
+// 	evt.reply("reply_select_color_default", refresh_mdp);
+// })
+//
+// ipcMain.on('select_color_red', (evt, arg) => {
+// 	options.update("select", n => "red").write()
+// 	let liste = [];
+// 	let tmp = data.get('passwords').value();
+// 	for(let i = 0; i<tmp.length; i++){
+// 		if(tmp[i].color == "red"){
+// 			liste.push(tmp[i]);
+// 		}
+// 	}
+// 	let refresh_mdp = {
+// 		liste_mdp: liste,
+// 		nb_passwords: data.get('count').value()
+// 	}
+// 	evt.reply("reply_select_color_red", refresh_mdp);
+// })
+//
+// ipcMain.on('select_color_green', (evt, arg) => {
+// 	options.update("select", n => "green").write()
+// 	let liste = [];
+// 	let tmp = data.get('passwords').value();
+// 	for(let i = 0; i<tmp.length; i++){
+// 		if(tmp[i].color == "green"){
+// 			liste.push(tmp[i]);
+// 		}
+// 	}
+// 	let refresh_mdp = {
+// 		liste_mdp: liste,
+// 		nb_passwords: data.get('count').value()
+// 	}
+// 	evt.reply("reply_select_color_green", refresh_mdp);
+// })
+//
+// ipcMain.on('select_color_blue', (evt, arg) => {
+// 	options.update("select", n => "blue").write()
+// 	let liste = [];
+// 	let tmp = data.get('passwords').value();
+// 	for(let i = 0; i<tmp.length; i++){
+// 		if(tmp[i].color == "blue"){
+// 			liste.push(tmp[i]);
+// 		}
+// 	}
+// 	let refresh_mdp = {
+// 		liste_mdp: liste,
+// 		nb_passwords: data.get('count').value()
+// 	}
+// 	evt.reply("reply_select_color_blue", refresh_mdp);
+// })
 
 
 
@@ -400,6 +379,6 @@ ipcMain.on("select_mdp", (evt, arg) => {
 
 app.on("window-all-closed", () => {
 	auth.update('connected', el => "").write()
-	options.update('select', n => "none").write()
+	options.update('search', n => "").write()
 	app.quit()
 });

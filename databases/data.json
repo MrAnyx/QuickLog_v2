@@ -32,7 +32,7 @@
     },
     {
       "id": 1564328836159,
-      "plateform": "instagram",
+      "plateform": "instagram2",
       "url": "1",
       "email": "1",
       "username": "1",
@@ -42,21 +42,6 @@
       "color": "red",
       "date_creation": 1564328836159,
       "last_use": 1564328836159,
-      "nb_use": 0,
-      "favoris": 1
-    },
-    {
-      "id": 1564328849881,
-      "plateform": "instagram34",
-      "url": "2",
-      "email": "2",
-      "username": "2",
-      "password": "c5",
-      "icon": "fab fa-instagram",
-      "type": "2",
-      "color": "red",
-      "date_creation": 1564328849880,
-      "last_use": 1564328849880,
       "nb_use": 0,
       "favoris": 1
     },
@@ -136,5 +121,5 @@
       "favoris": 0
     }
   ],
-  "count": 9
+  "count": 8
 }
