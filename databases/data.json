@@ -2,7 +2,7 @@
   "passwords": [
     {
       "id": 1563969418093,
-      "plateform": "instagram",
+      "plateform": "instagram2",
       "url": "https://www.instagram.com",
       "email": "1ptitigre@gmail.com",
       "username": "rob.bch",
@@ -29,7 +29,22 @@
       "last_use": 1564327012994,
       "nb_use": 0,
       "favoris": 1
+    },
+    {
+      "id": 1564328040931,
+      "plateform": "instagram",
+      "url": "2",
+      "email": "2",
+      "username": "2",
+      "password": "c5",
+      "icon": "fab fa-instagram",
+      "type": "2",
+      "color": "green",
+      "date_creation": 1564328040931,
+      "last_use": 1564328040931,
+      "nb_use": 0,
+      "favoris": 0
     }
   ],
-  "count": 2
+  "count": 3
 }

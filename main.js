@@ -216,16 +216,13 @@ ipcMain.on("update_password", (evt, arg) => {
 		color: arg.color.toLowerCase()
 	}).write();
 
-
-
-
 	let color = options.get('select').value();
+	let search = options.get('search').value();
 	let liste_modify_pass = [];
-	if(color != "none"){
+	if(color != "none" || search != ""){
 		let modify_pass = data.get('passwords').value();
-
 		for(let i = 0; i<modify_pass.length; i++){
-			if(modify_pass[i].color == color){
+			if(modify_pass[i].color == color && modify_pass[i].plateform.toUpperCase().includes(search.toUpperCase())){
 				liste_modify_pass.push(modify_pass[i]);
 			}
 		}
@@ -239,9 +236,6 @@ ipcMain.on("update_password", (evt, arg) => {
 	}
 
 	evt.reply("reply_update_password", refresh_mdp);
-
-
-
 });
 
 ipcMain.on('synchro', (evt) => {
@@ -257,6 +251,11 @@ ipcMain.on('synchro', (evt) => {
 ipcMain.on('search_mdp', (evt, arg) => {
 	let liste_mdp = [];
 	let tmp = data.get('passwords').value();
+	if(arg == ""){
+		options.update('search', n => '').write();
+	}else{
+		options.update('search', n => arg).write();
+	}
 	for(let i = 0; i<tmp.length; i++){
 		if(tmp[i].plateform.toUpperCase().includes(arg.toUpperCase())){
 			liste_mdp.push(tmp[i]);

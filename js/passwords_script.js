@@ -239,7 +239,6 @@ ipc.on('reply_synchro', (evt, arg) => {
 // const button_search_mdp = document.getElementById('button_search_mdp');
 const button_search_field = document.getElementById('search_field');
 button_search_field.addEventListener('keyup', (event) => {
-    console.log(event);
     let search_mdp = document.getElementById('search_field').value;
     ipc.send('search_mdp', search_mdp);
     ipc.on('reply_search_mdp', (evt, arg) => {
