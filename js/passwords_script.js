@@ -127,9 +127,7 @@ add_password.addEventListener('click', () => {
 
 ipc.on('reply_delete_field', function(evt, arg){
     fct.display_liste(arg);
-
     if(arg.statut){
-
         document.getElementById('details').style.opacity = 0;
     }
 });
@@ -212,7 +210,27 @@ modify_password.addEventListener('click', () => {
 ipc.on("reply_update_password", (evt, arg) => {
     $('#modal_modify').modal('hide');
     fct.display_liste(arg);
-    // ajout le reset des valeurs pour la sécurité
+    if(arg.statut){
+        let liste_color = ["bg-secondary", "bg-danger", "bg-success", "bg-primary"]
+        liste_color.forEach((el) => {
+            document.getElementById('color_select').classList.remove(el)
+        })
+        //set the color
+        let dic_color = {"default": "bg-secondary", "red": "bg-danger", "green": "bg-success", "blue": "bg-primary"}
+        document.getElementById('color_select').classList.add(dic_color[arg.mdp_modify.color])
+
+        //display icon
+        document.getElementById('icon_select').setAttribute("class", "")
+        document.getElementById('icon_select').setAttribute("class", `text-light ${arg.mdp_modify.icon}`)
+
+        document.getElementById('plateform_select').innerHTML = arg.mdp_modify.plateform
+        document.getElementById('url_select').innerHTML = arg.mdp_modify.url
+        document.getElementById('url_select').setAttribute("href", arg.mdp_modify.url)
+
+        document.getElementById('email_select').innerHTML = arg.mdp_modify.email
+        document.getElementById('username_select').innerHTML = arg.mdp_modify.username
+        document.getElementById('clipboard').setAttribute("password", arg.mdp_modify.password)
+    }
 });
 
 

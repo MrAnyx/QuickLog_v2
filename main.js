@@ -227,6 +227,13 @@ ipcMain.on("update_password", (evt, arg) => {
 		icon: icon,
 		color: arg.color.toLowerCase()
 	}).write();
+
+	let statut = false;
+
+	if(options.get('select').value() == arg.id){
+		statut = true;
+	}
+
 	let search = options.get('search').value();
 	let liste_modify_pass = [];
 	if(search != ""){
@@ -243,6 +250,8 @@ ipcMain.on("update_password", (evt, arg) => {
 
 	let refresh_mdp = {
 		liste_mdp : liste_modify_pass,
+		statut: statut,
+		mdp_modify: data.get('passwords').find({ id: arg.id }).value(),
 		nb_passwords: data.get('count').value()
 	}
 
