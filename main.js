@@ -206,6 +206,13 @@ ipcMain.on('modify_field', function(evt, arg){
 	evt.reply('reply_modify_field', get_mdp);
 });
 ipcMain.on("update_password", (evt, arg) => {
+	let tmp_icon = brands.get('brands').find({ name: arg.plateform.toLowerCase() }).value();
+	let icon;
+	if(tmp_icon == null){
+		icon = "";
+	}else{
+		icon = tmp_icon.icon;
+	}
 	data.get('passwords').find({ id: arg.id }).assign({
 		plateform: arg.plateform,
 		url: arg.url,
@@ -213,6 +220,7 @@ ipcMain.on("update_password", (evt, arg) => {
 		username: arg.username,
 		password: arg.password,
 		type: arg.type,
+		icon: icon,
 		color: arg.color.toLowerCase()
 	}).write();
 	let search = options.get('search').value();
