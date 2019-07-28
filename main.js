@@ -258,7 +258,7 @@ ipcMain.on('search_mdp', (evt, arg) => {
 	let liste_mdp = [];
 	let tmp = data.get('passwords').value();
 	for(let i = 0; i<tmp.length; i++){
-		if(tmp[i].plateform == arg){
+		if(tmp[i].plateform.toUpperCase().includes(arg.toUpperCase())){
 			liste_mdp.push(tmp[i]);
 		}
 	}
