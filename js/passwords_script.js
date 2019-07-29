@@ -5,6 +5,7 @@ const fs = require('fs');
 const {dialog} = require('electron').remote;
 const shell = require('electron').shell;
 
+
 document.addEventListener("DOMContentLoaded", function() {
 
     ipc.send("init");
