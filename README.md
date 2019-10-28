@@ -1,6 +1,7 @@
 # QuickLog_v2
 This is the second version of my password manager. Click [here]() to visit the website.
 
+
 # Languages
   - NodeJS
   - HTML
