@@ -3,19 +3,16 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
-const { ipcRenderer } = window; 
+const { ipcRenderer } = window;
 
 Vue.config.productionTip = false
-// Vue.use(require('vue-electron'))
-// Vue.prototype.$electron = ipcRenderer
-
 
 new Vue({
   router,
   store,
-  vuetify,
   prototype: {
     $electron: ipcRenderer
   },
+  vuetify,
   render: h => h(App)
 }).$mount('#app')

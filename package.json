@@ -12,6 +12,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "buefy": "^0.9.3",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-electron": "^1.0.6",
