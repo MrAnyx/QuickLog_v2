@@ -10,28 +10,26 @@ const path = require("path")
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 
-
-// Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
 function createWindow() {
-  // Create the browser window.
   win = new BrowserWindow({
     center: true,
     width: 1200,
     height: 800,
+    minHeight: 600,
+    minWidth: 1000,
 		show: false,
     webPreferences: {
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       preload: path.join(__dirname, '../src/preload.js'),
     },
     icon: path.join(__dirname, "assets/logo.ico")
-
   })
+
+  // win.setMenu(null)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode

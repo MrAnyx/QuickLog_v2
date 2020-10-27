@@ -1,20 +1,32 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/Home'
-import Contact from '@/views/Contact'
+import Passwords from '@/views/Security/Passwords'
+import Payment from '@/views/Security/Payment'
+import Notes from '@/views/Security/Notes'
+import Dashboard from '@/views/Manager/Dashboard'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/passwords',
+    name: 'passwords',
+    component: Passwords
   },
   {
-    path: '/contact',
-    name: 'Contact',
-    component: Contact
+    path: '/payment',
+    name: 'payment',
+    component: Payment
+  },
+  {
+    path: '/notes',
+    name: 'notes',
+    component: Notes
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
   }
 ]
 
