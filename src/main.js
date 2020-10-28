@@ -6,13 +6,11 @@ import vuetify from './plugins/vuetify';
 const { ipcRenderer } = window;
 
 Vue.config.productionTip = false
+Vue.prototype.$electron = ipcRenderer
 
 new Vue({
   router,
   store,
-  prototype: {
-    $electron: ipcRenderer
-  },
   vuetify,
   render: h => h(App)
 }).$mount('#app')
