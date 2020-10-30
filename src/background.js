@@ -5,9 +5,11 @@ import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 // import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== "production";
 const path = require("path");
+const { v4: uuidv4 } = require('uuid');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
+
 let win;
 
 protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: true, standard: true } }]);
@@ -22,9 +24,9 @@ function createWindow() {
 		show: false,
 		webPreferences: {
 			nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-			preload: path.join(__dirname, "../src/preload.js"),
+			preload: path.join(__dirname, "preload.js"), // Ne marche qu'en développement, en prod, le lien n'est pas bon
 		},
-		// icon: path.join(__dirname, "assets/logo.ico"),
+		icon: path.join(__static, 'icon.png')
 	});
 
 	// win.setMenu(null)
@@ -101,54 +103,68 @@ ipcMain.on("ready", (event, arg) => {
 ipcMain.on("GET_TABLE", (event, arg) => {
 	event.reply("GET_TABLE_REPLY", [
 		{
+			uuid: uuidv4(),
 			name: "Frozen Yogurt",
 			calories: 159,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Ice cream sandwich",
 			calories: 237,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Eclair",
 			calories: 262,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Cupcake",
 			calories: 305,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Gingerbread",
 			calories: 356,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Jelly bean",
 			calories: 375,
 		},
 		{
+			uuid: uuidv4(),
+			uuid: uuidv4(),
 			name: "Lollipop",
 			calories: 392,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Honeycomb",
 			calories: 408,
 		},
 		{
+			uuid: uuidv4(),
 			name: "Donut",
 			calories: 452,
 		},
 		{
+			uuid: uuidv4(),
 			name: "KitKat",
 			calories: 518,
 		},
 		{
+			uuid: uuidv4(),
 			name: "KitKat",
 			calories: 518,
 		},
 		{
+			uuid: uuidv4(),
 			name: "KitKat",
 			calories: 518,
 		},
 		{
+			uuid: uuidv4(),
 			name: "KitKat",
 			calories: 518,
 		}]

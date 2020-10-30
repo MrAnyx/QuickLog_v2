@@ -1,29 +1,30 @@
 <template>
 	<div>
-		<v-simple-table fixed-header height="100vh">
-			<template v-slot:default>
-				<thead>
-					<tr>
-						<th class="text-left">
-							Name
-						</th>
-						<th class="text-left">
-							Calories
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="item in desserts" :key="item.name">
-						<td>{{ item.name }}</td>
-						<td>{{ item.calories }}</td>
-					</tr>
-				</tbody>
-			</template>
+		<v-simple-table fixed-header height="100vh" loading loading-text="Loading... Please wait">
+			<thead>
+				<tr>
+					<th class="text-left">
+						Name
+					</th>
+					<th class="text-left">
+						Calories
+					</th>
+					<th class="text-left">
+						uuid
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="item in desserts" :key="item.uuid" @click.stop="displayInfo(item)">
+					<td>{{ item.name }}</td>
+					<td>{{ item.calories }}</td>
+					<td>{{ item.uuid }}</td>
+				</tr>
+			</tbody>
 		</v-simple-table>
 
 		<v-navigation-drawer v-model="drawer" absolute temporary right width="500px">
 			<v-list-item>
-
 				<v-list-item-content>
 					<v-list-item-title>John Leider</v-list-item-title>
 				</v-list-item-content>
@@ -43,14 +44,6 @@
 				</v-list-item>
 			</v-list>
 		</v-navigation-drawer>
-
-		<v-container class="fill-height">
-			<v-row align="center" justify="center">
-				<v-btn color="pink" dark @click.stop="drawer = !drawer">
-					Toggle
-				</v-btn>
-			</v-row>
-		</v-container>
 	</div>
 </template>
 
@@ -73,6 +66,12 @@ export default {
 		this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
 			this.desserts = arg;
 		});
+	},
+	methods: {
+		displayInfo(element) {
+			// console.log(element);
+			this.drawer = !this.drawer
+		},
 	},
 };
 </script>
