@@ -3,9 +3,44 @@
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 // import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
+
+const CryptoJS = require("crypto-js");
+const os = require("os");
 const isDevelopment = process.env.NODE_ENV !== "production";
 const path = require("path");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+
+var Datastore = require("nedb");
+
+fs.mkdir(path.join(os.tmpdir(), "quicklog", "storage"), { recursive: true }, (err) => {
+	if (err) {
+		return console.error(err);
+	}
+});
+
+
+
+// à faire après le login success pour pouvoir créer si besoin le fichier avec un nom différent
+// sqs pour Secure QuickLog Storage
+var data = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "data.sqs"), autoload: true });
+var auth = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "auth.sqs"), autoload: true });
+
+var doc = {
+	_id: uuidv4(),
+	plateform: "Amazon",
+	createdAt: new Date(),
+	updatedAt: new Date(),
+	color: "white",
+	// password: CryptoJS.AES.encrypt("password", 'test').toString()
+	password: CryptoJS.PBKDF2("test", "bonjour", { keySize: 8, iterations: 100000 }).toString()
+};
+
+data.insert(doc, function(err, newDoc) {
+	// Callback is optional
+	// newDoc is the newly inserted document, including its _id
+	// newDoc has no key called notToBeSaved since its value was undefined
+});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -24,9 +59,9 @@ function createWindow() {
 		show: false,
 		webPreferences: {
 			nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-			preload: path.join(__dirname, "preload.js"), // Ne marche qu'en développement, en prod, le lien n'est pas bon
+			preload: path.join(__dirname, "preload.js"),
 		},
-		icon: path.join(__static, 'icon.png')
+		icon: path.join(__static, "icon.png"),
 	});
 
 	// win.setMenu(null)
@@ -167,6 +202,6 @@ ipcMain.on("GET_TABLE", (event, arg) => {
 			uuid: uuidv4(),
 			name: "KitKat",
 			calories: 518,
-		}]
-	);
+		},
+	]);
 });
