@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-navigation-drawer app permanent color="blue-grey lighten-5">
+		<v-navigation-drawer app permanent color="blue-grey lighten-5" v-if="displaySideBarVariable">
 			<v-layout justify-center class="mt-10 mb-6">
 				<v-img src="./assets/logo_sm.png" max-width="150px"></v-img>
 			</v-layout>
@@ -44,7 +44,20 @@ export default {
 				links: [["mdi-view-dashboard-outline", "Dashboard", "/dashboard"]],
 			},
 		],
+		displaySideBarVariable: false
 	}),
+	watch: {
+		$route: function() {
+			if (this.$route.name !== "login" && this.$route.name !== "register") {
+				this.displaySideBarVariable = true;
+			}
+		},
+	},
+	mounted() {
+		if (this.$route.name !== "login" && this.$route.name !== "register") {
+			this.displaySideBarVariable = true;
+		}
+	},
 };
 </script>
 

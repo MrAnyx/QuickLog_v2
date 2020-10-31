@@ -10,6 +10,11 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
+const Store = require('electron-store');
+
+const store = new Store();
+
+store.set("currentUser", "User1");
 
 var Datastore = require("nedb");
 
@@ -20,27 +25,27 @@ fs.mkdir(path.join(os.tmpdir(), "quicklog", "storage"), { recursive: true }, (er
 });
 
 
-
 // à faire après le login success pour pouvoir créer si besoin le fichier avec un nom différent
 // sqs pour Secure QuickLog Storage
 var data = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "data.sqs"), autoload: true });
 var auth = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "auth.sqs"), autoload: true });
 
-var doc = {
-	_id: uuidv4(),
-	plateform: "Amazon",
-	createdAt: new Date(),
-	updatedAt: new Date(),
-	color: "white",
-	// password: CryptoJS.AES.encrypt("password", 'test').toString()
-	password: CryptoJS.PBKDF2("test", "bonjour", { keySize: 8, iterations: 100000 }).toString()
-};
+// var doc = {
+// 	_id: uuidv4(),
+// 	plateform: "Amazon",
+// 	createdAt: new Date(),
+// 	updatedAt: new Date(),
+// 	color: "white",
+// 	// password: CryptoJS.AES.encrypt("password", 'test').toString()
+// 	password: CryptoJS.PBKDF2("test", "bonjour", { keySize: 8, iterations: 10000 }).toString()
+// };
 
-data.insert(doc, function(err, newDoc) {
-	// Callback is optional
-	// newDoc is the newly inserted document, including its _id
-	// newDoc has no key called notToBeSaved since its value was undefined
-});
+
+// data.insert(doc, function(err, newDoc) {
+// 	// Callback is optional
+// 	// newDoc is the newly inserted document, including its _id
+// 	// newDoc has no key called notToBeSaved since its value was undefined
+// });
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -132,7 +137,8 @@ if (isDevelopment) {
 }
 
 ipcMain.on("ready", (event, arg) => {
-	event.reply("ready-reply", "bonjour from main process");
+	currentUser = "user"
+	event.reply("ready-reply", "done !");
 });
 
 ipcMain.on("GET_TABLE", (event, arg) => {
@@ -151,57 +157,10 @@ ipcMain.on("GET_TABLE", (event, arg) => {
 			uuid: uuidv4(),
 			name: "Eclair",
 			calories: 262,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Cupcake",
-			calories: 305,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Gingerbread",
-			calories: 356,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Jelly bean",
-			calories: 375,
-		},
-		{
-			uuid: uuidv4(),
-			uuid: uuidv4(),
-			name: "Lollipop",
-			calories: 392,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Honeycomb",
-			calories: 408,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Donut",
-			calories: 452,
-		},
-		{
-			uuid: uuidv4(),
-			name: "KitKat",
-			calories: 518,
-		},
-		{
-			uuid: uuidv4(),
-			name: "KitKat",
-			calories: 518,
-		},
-		{
-			uuid: uuidv4(),
-			name: "KitKat",
-			calories: 518,
-		},
-		{
-			uuid: uuidv4(),
-			name: "KitKat",
-			calories: 518,
-		},
+		}
 	]);
 });
+
+ipcMain.on("GET_USER", (event, arg) => {
+	event.reply("GET_USER_REPLY", store.get("currentUser"))
+})

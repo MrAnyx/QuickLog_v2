@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-simple-table fixed-header height="100vh" loading loading-text="Loading... Please wait">
+		<v-simple-table fixed-header height="100vh">
 			<thead>
 				<tr>
 					<th class="text-left">
@@ -70,7 +70,11 @@ export default {
 	methods: {
 		displayInfo(element) {
 			// console.log(element);
-			this.drawer = !this.drawer
+			// this.drawer = !this.drawer
+			this.$electron.send("GET_USER");
+			this.$electron.once("GET_USER_REPLY", (event, arg) => {
+				console.log(arg)
+			});
 		},
 	},
 };
