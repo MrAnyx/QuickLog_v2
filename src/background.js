@@ -10,7 +10,8 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
-const Store = require('electron-store');
+const Store = require("electron-store");
+const bcrypt = require("bcrypt");
 
 const store = new Store();
 
@@ -23,7 +24,6 @@ fs.mkdir(path.join(os.tmpdir(), "quicklog", "storage"), { recursive: true }, (er
 		return console.error(err);
 	}
 });
-
 
 // à faire après le login success pour pouvoir créer si besoin le fichier avec un nom différent
 // sqs pour Secure QuickLog Storage
@@ -39,7 +39,6 @@ var auth = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage
 // 	// password: CryptoJS.AES.encrypt("password", 'test').toString()
 // 	password: CryptoJS.PBKDF2("test", "bonjour", { keySize: 8, iterations: 10000 }).toString()
 // };
-
 
 // data.insert(doc, function(err, newDoc) {
 // 	// Callback is optional
@@ -137,7 +136,7 @@ if (isDevelopment) {
 }
 
 ipcMain.on("ready", (event, arg) => {
-	currentUser = "user"
+	currentUser = "user";
 	event.reply("ready-reply", "done !");
 });
 
@@ -157,10 +156,49 @@ ipcMain.on("GET_TABLE", (event, arg) => {
 			uuid: uuidv4(),
 			name: "Eclair",
 			calories: 262,
-		}
+		},
 	]);
 });
 
 ipcMain.on("GET_USER", (event, arg) => {
-	event.reply("GET_USER_REPLY", store.get("currentUser"))
-})
+	event.reply("GET_USER_REPLY", store.get("currentUser"));
+});
+
+ipcMain.on("POST_REGISTER", (event, arg) => {
+	auth.find({ username: arg.username }, function(err, docs) {
+		if (err) {
+			event.reply("POST_REGISTER_REPLY", {
+				status: "error",
+				message: "An error occured during the registration",
+			});
+		} else {
+			if (docs.length >= 1) {
+				event.reply("POST_REGISTER_REPLY", {
+					status: "error",
+					message: "This username already exists"
+				});
+			} else {
+				let salt = bcrypt.genSaltSync(10);
+				let user = {
+					_id: uuidv4(),
+					username: arg.username,
+					password: bcrypt.hashSync(arg.password, salt),
+					salt: salt,
+				};
+				auth.insert(user, function(err, newDoc) {
+					if (!err) {
+						event.reply("POST_REGISTER_REPLY", {
+							status: "success",
+							message: "You account has been created successfully. You will be automatically redirected to the login page",
+						});
+					} else {
+						event.reply("POST_REGISTER_REPLY", {
+							status: "error",
+							message: "An error occured during the registration",
+						});
+					}
+				});
+			}
+		}
+	});
+});
