@@ -15,8 +15,6 @@ const bcrypt = require("bcrypt");
 
 const store = new Store();
 
-store.set("currentUser", "User1");
-
 var Datastore = require("nedb");
 
 fs.mkdir(path.join(os.tmpdir(), "quicklog", "storage"), { recursive: true }, (err) => {
@@ -25,26 +23,9 @@ fs.mkdir(path.join(os.tmpdir(), "quicklog", "storage"), { recursive: true }, (er
 	}
 });
 
-// à faire après le login success pour pouvoir créer si besoin le fichier avec un nom différent
 // sqs pour Secure QuickLog Storage
 var data = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "data.sqs"), autoload: true });
 var auth = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "auth.sqs"), autoload: true });
-
-// var doc = {
-// 	_id: uuidv4(),
-// 	plateform: "Amazon",
-// 	createdAt: new Date(),
-// 	updatedAt: new Date(),
-// 	color: "white",
-// 	// password: CryptoJS.AES.encrypt("password", 'test').toString()
-// 	password: CryptoJS.PBKDF2("test", "bonjour", { keySize: 8, iterations: 10000 }).toString()
-// };
-
-// data.insert(doc, function(err, newDoc) {
-// 	// Callback is optional
-// 	// newDoc is the newly inserted document, including its _id
-// 	// newDoc has no key called notToBeSaved since its value was undefined
-// });
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -94,6 +75,7 @@ app.on("window-all-closed", () => {
 	// to stay active until the user quits explicitly with Cmd + Q
 	if (process.platform !== "darwin") {
 		app.quit();
+		store.clear();
 	}
 });
 
@@ -126,44 +108,18 @@ if (isDevelopment) {
 		process.on("message", (data) => {
 			if (data === "graceful-exit") {
 				app.quit();
+				store.clear();
 			}
 		});
 	} else {
 		process.on("SIGTERM", () => {
 			app.quit();
+			store.clear();
 		});
 	}
 }
 
-ipcMain.on("ready", (event, arg) => {
-	currentUser = "user";
-	event.reply("ready-reply", "done !");
-});
-
-ipcMain.on("GET_TABLE", (event, arg) => {
-	event.reply("GET_TABLE_REPLY", [
-		{
-			uuid: uuidv4(),
-			name: "Frozen Yogurt",
-			calories: 159,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Ice cream sandwich",
-			calories: 237,
-		},
-		{
-			uuid: uuidv4(),
-			name: "Eclair",
-			calories: 262,
-		},
-	]);
-});
-
-ipcMain.on("GET_USER", (event, arg) => {
-	event.reply("GET_USER_REPLY", store.get("currentUser"));
-});
-
+// ? Registration event
 ipcMain.on("POST_REGISTER", (event, arg) => {
 	auth.find({ username: arg.username }, function(err, docs) {
 		if (err) {
@@ -175,7 +131,7 @@ ipcMain.on("POST_REGISTER", (event, arg) => {
 			if (docs.length >= 1) {
 				event.reply("POST_REGISTER_REPLY", {
 					status: "error",
-					message: "This username already exists"
+					message: "This username already exists",
 				});
 			} else {
 				let salt = bcrypt.genSaltSync(10);
@@ -202,3 +158,76 @@ ipcMain.on("POST_REGISTER", (event, arg) => {
 		}
 	});
 });
+
+// ? Login event
+ipcMain.on("POST_LOGIN", (event, arg) => {
+	auth.find({ username: arg.username }, function(err, docs) {
+		if (err) {
+			event.reply("POST_LOGIN_REPLY", {
+				status: "error",
+				message: "An error occured during the login",
+			});
+		} else {
+			if (docs.length === 0) {
+				event.reply("POST_LOGIN_REPLY", {
+					status: "error",
+					message: "This account doesn't exist",
+				});
+			} else {
+				let userDB = docs[0];
+				let passwordIsCorrect = bcrypt.compareSync(arg.password, userDB.password);
+				if (passwordIsCorrect) {
+					store.set("username", userDB.username);
+					store.set("uuid", userDB._id);
+					store.set("session", uuidv4());
+
+					let vaultKey = CryptoJS.PBKDF2(`${userDB.username}${arg.password}`, userDB.salt, { keySize: 8, iterations: 100000 }).toString();
+					store.set("vaultKey", vaultKey);
+					event.reply("POST_LOGIN_REPLY", {
+						status: "success",
+						message: "Successfully logged in. We will automatically redirect you to your vault",
+					});
+				} else {
+					event.reply("POST_LOGIN_REPLY", {
+						status: "error",
+						message: "Wrong credentials. Try again",
+					});
+				}
+			}
+		}
+	});
+});
+
+// ? Get data
+ipcMain.on("GET_TABLE", (event, arg) => {
+	event.reply("GET_TABLE_REPLY", [
+		{
+			uuid: uuidv4(),
+			name: "Frozen Yogurt",
+			calories: 159,
+		},
+		{
+			uuid: uuidv4(),
+			name: "Ice cream sandwich",
+			calories: 237,
+		},
+		{
+			uuid: uuidv4(),
+			name: "Eclair",
+			calories: 262,
+		},
+	]);
+});
+
+
+ipcMain.on("IS_USER_CONNECTED", (event, arg) => {
+	if(store.get("session") === undefined) {
+		event.reply("IS_USER_CONNECTED_REPLY", {
+			isConnected: false
+		})
+	} else {
+		event.reply("IS_USER_CONNECTED_REPLY", {
+			isConnected: true
+		})
+	}
+})

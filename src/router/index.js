@@ -11,16 +11,16 @@ import Dashboard from "@/views/Manager/Dashboard";
 import Login from "@/views/Login/Login";
 import Register from "@/views/Login/Register";
 
+import Redirect from "@/views/Redirect/Redirect";
+
 import Page404 from "@/views/Error/Page404";
 
 Vue.use(VueRouter);
 
-const { ipcRenderer } = window;
-
 const routes = [
 	{
 		path: "/",
-		redirect: "login"
+		redirect: "redirect"
 	},
 	{
 		path: "/login",
@@ -51,6 +51,11 @@ const routes = [
 		path: "/dashboard",
 		name: "dashboard",
 		component: Dashboard,
+	},
+	{
+		path: "/redirect",
+		name: "redirect",
+		component: Redirect,
 	},
 	{
 		path: "*",

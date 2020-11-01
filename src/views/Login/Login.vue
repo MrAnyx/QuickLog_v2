@@ -1,16 +1,18 @@
 <template>
-	<v-container fluid id="image-login" fill-height>
+	<v-container fluid id="image-register" fill-height>
 		<v-row align="center" justify="center">
 			<v-col sm="6" lg="4">
 				<v-card class="py-6 px-8">
 					<h4 class="text-center text-h4 mb-6">Login</h4>
-					<v-text-field label="Username" prepend-icon="mdi-account-outline"></v-text-field>
-					<v-text-field label="Password" prepend-icon="mdi-lock-outline"></v-text-field>
-
-					<div class="mt-5">
-						<v-btn color="primary" class="mr-5" :loading="loadingLogin" @click.stop="clickLogin()">Login</v-btn>
-						<v-btn text to="/register">Register</v-btn>
-					</div>
+					<v-form ref="form" v-model="valid">
+						<v-alert border="left" class="mb-8" text :color="alertColor" v-if="alertShow">{{ alertMessage }}</v-alert>
+						<v-text-field required label="Username" prepend-icon="mdi-account-outline" v-model="username" :rules="usernameRules"></v-text-field>
+						<v-text-field required class="my-5" type="password" label="Password" prepend-icon="mdi-lock-outline" v-model="password" :rules="passwordRules"></v-text-field>
+						<div class="mt-5">
+							<v-btn color="primary" class="mr-5" @click="validate" :disabled="!valid" :loading="loading">Login</v-btn>
+							<v-btn text to="/register">Register</v-btn>
+						</div>
+					</v-form>
 				</v-card>
 			</v-col>
 		</v-row>
@@ -22,26 +24,60 @@ export default {
 	name: "Login",
 	data() {
 		return {
-			loadingLogin: false
-		}
+			username: "",
+			usernameRules: [(v) => !!v || "Username is required"],
+			password: "",
+			passwordRules: [(v) => !!v || "Password is required"],
+
+			alertMessage: "",
+			alertShow: false,
+			alertColor: "red",
+
+			valid: true,
+			loading: false,
+		};
 	},
 	methods: {
-		clickLogin() {
-			this.loadingLogin = true
-			// ici faire la vérif du compte
-			this.$router.push('passwords');
+		validate() {
+			this.$refs.form.validate();
+
+			this.loading = true;
+			this.valid = !this.valid;
+
+			this.$electron.send("POST_LOGIN", {
+				username: this.username,
+				password: this.password
+			});
+
+			this.$electron.once("POST_LOGIN_REPLY", (event, arg) => {
+				this.alertShow = true;
+				this.alertColor = arg.status === "success" ? "green" : "red";
+				this.alertMessage = arg.message;
+
+				if (arg.status === "success") {
+					setTimeout(() => {
+						this.loading = false;
+						this.valid = !this.valid;
+						this.$router.push("passwords")
+					}, 2000)
+				} else {
+					this.loading = false;
+					this.valid = !this.valid;
+				}
+			});
 		}
-	}
+	},
 };
 </script>
+
 <style scoped>
-#image-login {
+#image-register {
 	background-image: url("../../assets/login-background.jpeg");
 	background-repeat: no-repeat;
 	background-size: cover;
 }
 
-#image-login::before {
+#image-register::before {
 	content: "";
 	position: absolute;
 	top: 0;

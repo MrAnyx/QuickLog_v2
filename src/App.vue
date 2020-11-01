@@ -48,13 +48,13 @@ export default {
 	}),
 	watch: {
 		$route: function() {
-			if (this.$route.name !== "login" && this.$route.name !== "register") {
+			if (this.$route.name !== "login" && this.$route.name !== "register" && this.$route.name !== "404" && this.$route.name !== "redirect") {
 				this.displaySideBarVariable = true;
 			}
 		},
 	},
 	mounted() {
-		if (this.$route.name !== "login" && this.$route.name !== "register") {
+		if (this.$route.name !== "login" && this.$route.name !== "register" && this.$route.name !== "404" && this.$route.name !== "redirect") {
 			this.displaySideBarVariable = true;
 		}
 	},
