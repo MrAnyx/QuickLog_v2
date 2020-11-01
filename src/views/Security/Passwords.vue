@@ -16,7 +16,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="item in desserts" :key="item.uuid" @click.stop="displayInfo(item)">
+				<tr v-for="item in []" :key="item.uuid" @click.stop="displayInfo(item)">
 					<td>{{ item.name }}</td>
 					<td>{{ item.calories }}</td>
 					<td>{{ item.uuid }}</td>
@@ -25,27 +25,7 @@
 		</v-simple-table>
 
 		<!-- sidebar right with info -->
-		<v-navigation-drawer v-model="drawer" absolute temporary right width="500px">
-			<v-list-item>
-				<v-list-item-content>
-					<v-list-item-title>John Leider</v-list-item-title>
-				</v-list-item-content>
-			</v-list-item>
-
-			<v-divider></v-divider>
-
-			<v-list dense>
-				<v-list-item v-for="item in items" :key="item.title" link>
-					<v-list-item-icon>
-						<v-icon>{{ item.icon }}</v-icon>
-					</v-list-item-icon>
-
-					<v-list-item-content>
-						<v-list-item-title>{{ item.title }}</v-list-item-title>
-					</v-list-item-content>
-				</v-list-item>
-			</v-list>
-		</v-navigation-drawer>
+		<v-navigation-drawer v-model="drawer" absolute temporary right width="350px"></v-navigation-drawer>
 
 		<!-- modal pour ajouter un nouveau mdp -->
 		<v-dialog v-model="dialog" persistent max-width="50%">
@@ -72,19 +52,21 @@
 				<h4 class="text-center text-h4 mb-6">New account</h4>
 				<v-form ref="form" v-model="valid">
 					<h6 class="text-h6">Essential informations</h6>
+					<v-text-field required type="text" label="Plateform" prepend-icon="mdi-search-web" v-model="plateform" :rules="plateformRules"></v-text-field>
+
 					<v-row align="center">
-						<v-checkbox v-model="userEnabled" hide-details class="shrink mr-2 mt-0"></v-checkbox>
-						<v-text-field :disabled="!userEnabled" label="Username" prepend-icon="mdi-account-outline" v-model="username"></v-text-field>
+						<v-checkbox v-model="userEnabled" hide-details class="shrink mr-2 mt-0" @click="usernameCheck()" :rules="checkboxRules"></v-checkbox>
+						<v-text-field :disabled="!userEnabled" label="Username" prepend-icon="mdi-account-outline" v-model="username" :rules="usernameRules"></v-text-field>
 					</v-row>
 					<v-row align="center">
-						<v-checkbox v-model="emailEnabled" hide-details class="shrink mr-2 mt-0"></v-checkbox>
-						<v-text-field :disabled="!emailEnabled" label="Email" prepend-icon="mdi-account-outline" v-model="email"></v-text-field>
+						<v-checkbox v-model="emailEnabled" hide-details class="shrink mr-2 mt-0" @click="emailCheck()" :rules="checkboxRules"></v-checkbox>
+						<v-text-field :disabled="!emailEnabled" label="Email" prepend-icon="mdi-at" v-model="email" :rules="emailRules"></v-text-field>
 					</v-row>
-					<v-text-field required type="password" label="Password" prepend-icon="mdi-lock-outline" v-model="password"></v-text-field>
+					<v-text-field required type="password" label="Password" prepend-icon="mdi-lock-outline" v-model="password" :rules="passwordRules"></v-text-field>
 
 					<h6 class="text-h6 mt-5">Options</h6>
 					<v-combobox v-model="select" :items="items" label="Category" clearable multiple small-chips prepend-icon="mdi-shape-outline"></v-combobox>
-					<v-text-field required type="text" label="Custom category" v-model="custom" v-if="displayCustomCategory"></v-text-field>
+					<v-text-field required type="text" label="Custom category" v-model="custom" v-if="displayCustomCategory" :rules="customRules"></v-text-field>
 
 					<div class="mt-5">
 						<v-btn class="mr-3" color="primary" @click="validate" :disabled="!valid" :loading="loading">Add</v-btn>
@@ -101,8 +83,7 @@ export default {
 	name: "Passwords",
 	data() {
 		return {
-			desserts: [],
-
+			data: [],
 			drawer: false,
 
 			direction: "top",
@@ -120,36 +101,58 @@ export default {
 
 			valid: true,
 			loading: false,
-			userEnabled: false,
+			plateform: "",
 			username: "",
-			emailEnabled: false,
 			email: "",
 			password: "",
-			items: ["Social", "Entrainement", "Professional", "Custom"],
+			custom: "",
 			select: [],
+
+			userEnabled: false,
+			emailEnabled: false,
+
+			plateformRules: [(v) => !!v || "Plateform is required"],
+			passwordRules: [(v) => !!v || "Password is required"],
+			checkboxRules: [false || "Is required"],
+			usernameRules: [],
+			emailRules: [],
+			customRules: [],
+
+			items: ["Social", "Entrainement", "Professional", "Custom"],
 			displayCustomCategory: false,
-			custom: ""
 		};
 	},
 
 	watch: {
 		select: "displayCustomCategoryFunction",
+		userEnabled: "checkboxUpdateValid",
+		emailEnabled: "checkboxUpdateValid",
 	},
 
 	mounted() {
 		this.$electron.send("GET_TABLE");
 		this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
-			this.desserts = arg;
+			this.data = arg;
 		});
 	},
 	methods: {
+		checkboxUpdateValid() {
+			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
+				this.checkboxRules = [true || "Is required"];
+			} else {
+				this.checkboxRules = [false || "Is required"];
+			}
+		},
 		displayInfo(element) {
 			this.drawer = !this.drawer;
 		},
 		displayCustomCategoryFunction() {
-			if(this.select.includes("Custom")){
+			if (this.select.includes("Custom")) {
 				this.displayCustomCategory = true;
+				this.customRules = [(v) => !!v || "Custom category is required"];
 			} else {
+				this.custom = "";
+				this.customRules = [];
 				this.displayCustomCategory = false;
 			}
 		},
@@ -160,10 +163,27 @@ export default {
 			this.valid = !this.valid;
 		},
 		cancelModal() {
+			this.$refs.form.reset();
 			this.dialog = false;
 			this.loading = false;
 			this.valid = true;
-		}
+		},
+		usernameCheck() {
+			if (!this.userEnabled) {
+				this.username = "";
+				this.usernameRules = [];
+			} else {
+				this.usernameRules = [(v) => !!v || "Username is required"];
+			}
+		},
+		emailCheck() {
+			if (!this.emailEnabled) {
+				this.email = "";
+				this.emailRules = [];
+			} else {
+				this.emailRules = [(v) => !!v || "Email is required"];
+			}
+		},
 	},
 };
 </script>
