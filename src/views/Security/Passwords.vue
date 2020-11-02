@@ -36,7 +36,7 @@
 						<v-btn x-small outlined color="error" class="mr-3" @click.stop="deletePass(item)">
 							<v-icon small>mdi-trash-can-outline</v-icon>
 						</v-btn>
-						<v-btn x-small text color="success" @click.stop="editPass(item)">
+						<v-btn x-small text color="success" @click.stop="updateModal('Edit', 'Edit this account', item)">
 							<v-icon small>mdi-pencil-outline</v-icon>
 						</v-btn>
 					</td>
@@ -65,7 +65,7 @@
 
 					<v-tooltip left>
 						<template v-slot:activator="{ on: tooltip }">
-							<v-btn fab dark small color="green" v-bind="attrs" v-on="{ ...tooltip, ...dialog }">
+							<v-btn fab dark small color="green" v-bind="attrs" v-on="{ ...tooltip, ...dialog }" @click="updateModal('Add', 'New account')">
 								<v-icon>mdi-plus</v-icon>
 							</v-btn>
 						</template>
@@ -84,7 +84,7 @@
 			</template>
 
 			<v-card class="py-6 px-8">
-				<h4 class="text-center text-h4 mb-6">New account</h4>
+				<h4 class="text-center text-h4 mb-6">{{ titleModal }}</h4>
 				<v-alert border="left" text type="error" v-if="alert">{{ alertMessage }}</v-alert>
 				<v-form ref="form" v-model="valid">
 					<h6 class="text-h6">Essential informations</h6>
@@ -119,7 +119,7 @@
 					</v-chip-group>
 
 					<div class="mt-5">
-						<v-btn class="mr-3" color="primary" @click="validate" :disabled="!valid" :loading="loading">Add</v-btn>
+						<v-btn class="mr-3" color="primary" @click="functionButtonModal" :disabled="!valid" :loading="loading">{{ buttonModal }}</v-btn>
 						<v-btn text color="secondary" @click="cancelModal()">Cancel</v-btn>
 					</div>
 				</v-form>
@@ -134,12 +134,12 @@
 				</v-btn>
 			</template>
 		</v-snackbar>
-
 	</div>
 </template>
 
 <script>
 const cryptoRandomString = require("crypto-random-string");
+const CryptoJS = require("crypto-js");
 
 export default {
 	name: "Passwords",
@@ -165,6 +165,10 @@ export default {
 			valid: true,
 			loading: false,
 
+			buttonModal: "",
+			titleModal: "",
+			functionButtonModal: "",
+			idEdit: "",
 			plateform: "",
 			username: "",
 			email: "",
@@ -207,6 +211,41 @@ export default {
 		});
 	},
 	methods: {
+		updateModal(buttonMessage, titleModal, account = null) {
+			this.buttonModal = buttonMessage;
+			this.titleModal = titleModal;
+			this.functionButtonModal = this.validate;
+
+			if (buttonMessage === "Edit") {
+				this.functionButtonModal = this.edit;
+				this.idEdit = account._id;
+				this.$electron.send("GET_ACCOUNT", account._id);
+				this.$electron.once("GET_ACCOUNT_REPLY", (event, arg) => {
+					if (arg.status === "error") {
+						this.snackbar = true;
+						this.snackbarMessage = arg.message;
+						this.snackbarStatus = arg.status;
+					} else {
+						this.dialog = true;
+						this.plateform = account.plateform;
+						if (account.username && account.username.length !== 0) {
+							this.userEnabled = true;
+							this.username = account.username;
+						}
+						if (account.email && account.email.length !== 0) {
+							this.emailEnabled = true;
+							this.email = account.email;
+						}
+						this.password = arg.password;
+						this.select = account.categories;
+						if (account.categories.includes("Custom")) {
+							this.custom = account.custom.join(" ");
+							this.customChips = account.custom;
+						}
+					}
+				});
+			}
+		},
 		refresh() {
 			this.loadingRefresh = true;
 			this.$electron.send("GET_TABLE");
@@ -275,12 +314,44 @@ export default {
 				}
 			});
 		},
+		edit() {
+			this.$electron.send("POST_EDIT_ACCOUNT", {
+				_id: this.idEdit,
+				plateform: this.plateform,
+				username: this.username,
+				email: this.email,
+				password: this.password,
+				category: this.select,
+				custom: this.customChips,
+			});
+			this.$electron.once("POST_EDIT_ACCOUNT_REPLY", (event, arg) => {
+				if (arg.status === "error") {
+					this.alert = true;
+					this.alertMessage = arg.message;
+					this.loading = false;
+				} else {
+					this.loading = false;
+					this.snackbar = true;
+					this.dialog = false;
+					this.$refs.form.reset();
+					this.snackbarMessage = arg.message;
+					this.snackbarStatus = "success";
+					this.$electron.send("GET_TABLE");
+					this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
+						this.data = arg;
+					});
+				}
+			});
+		},
 		cancelModal() {
 			this.$refs.form.reset();
 			this.dialog = false;
 			this.loading = false;
 			this.alert = false;
 			this.alertMessage = "";
+			this.buttonModal = "";
+			this.titleModal = "",
+			this.functionButtonModal = "";
 		},
 		usernameCheck() {
 			if (!this.userEnabled) {
@@ -319,9 +390,7 @@ export default {
 				}
 			});
 		},
-		editPass(account) {
-			
-		},
+		editPass(account) {},
 	},
 };
 </script>

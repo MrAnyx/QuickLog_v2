@@ -265,18 +265,69 @@ ipcMain.on("POST_NEW_ACCOUNT", (event, arg) => {
 	});
 });
 
+// ? Delete an account
 ipcMain.on("DELETE_ACCOUNT", (event, arg) => {
 	data.remove({ _id: arg.id }, {}, function(err, numRemoved) {
-		if(err){
+		if (err) {
 			event.reply("DELETE_ACCOUNT_REPLY", {
 				status: "error",
-				message: "An error occured, please try again"
-			})
-		}else {
+				message: "An error occured, please try again",
+			});
+		} else {
 			event.reply("DELETE_ACCOUNT_REPLY", {
 				status: "success",
-				message: `${arg.plateform} has been deleted successfully`
-			})
+				message: `${arg.plateform} has been deleted successfully`,
+			});
 		}
 	});
+});
+
+// ? Get one account
+ipcMain.on("GET_ACCOUNT", (event, id) => {
+	data.find({ _id: id }, {}, function(err, docs) {
+		if (err) {
+			event.reply("GET_ACCOUNT_REPLY", {
+				status: "error",
+				message: "An error occured, please try again",
+				password: "",
+			});
+		} else {
+			event.reply("GET_ACCOUNT_REPLY", {
+				status: "success",
+				message: "OK",
+				password: CryptoJS.AES.decrypt(docs[0].password, store.get("vaultKey")),
+			});
+		}
+	});
+});
+
+ipcMain.on("POST_EDIT_ACCOUNT", (event, arg) => {
+	data.update(
+		{ _id: arg._id },
+		{
+			$set: {
+				plateform: arg.plateform,
+				username: arg.username,
+				email: arg.email,
+				password: CryptoJS.AES.encrypt(arg.password, store.get("vaultKey")).toString(),
+				categories: arg.category,
+				custom: arg.custom,
+				uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString(),
+			},
+		},
+		{},
+		function(err, numReplaced) {
+			if(err) {
+				event.reply("POST_EDIT_ACCOUNT_REPLY", {
+					status: "error",
+					message: "An error occured, please try again"
+				})
+			} else {
+				event.reply("POST_EDIT_ACCOUNT_REPLY", {
+					status: "success",
+					message: `${arg.plateform} account updated successfully`
+				})
+			}
+		}
+	);
 });
