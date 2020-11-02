@@ -33,10 +33,10 @@
 						</v-chip-group>
 					</td>
 					<td>
-						<v-btn x-small outlined color="error" class="mr-3" @click.stop="">
+						<v-btn x-small outlined color="error" class="mr-3" @click.stop="deletePass(item)">
 							<v-icon small>mdi-trash-can-outline</v-icon>
 						</v-btn>
-						<v-btn x-small text color="success" @click.stop="">
+						<v-btn x-small text color="success" @click.stop="editPass(item)">
 							<v-icon small>mdi-pencil-outline</v-icon>
 						</v-btn>
 					</td>
@@ -126,10 +126,19 @@
 			</v-card>
 		</v-dialog>
 
-		<v-snackbar v-model="snackbar">
+		<v-snackbar v-model="snackbar" text color="success">
 			{{ snackbarMessage }}
 			<template v-slot:action="{ attrs }">
-				<v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+				<v-btn text v-bind="attrs" @click="snackbar = false">
+					Close
+				</v-btn>
+			</template>
+		</v-snackbar>
+
+		<v-snackbar v-model="snackbarDelete" text :color="snackbarDeleteStatus">
+			{{ snackbarDeleteMessage }}
+			<template v-slot:action="{ attrs }">
+				<v-btn text v-bind="attrs" @click="snackbarDelete = false">
 					Close
 				</v-btn>
 			</template>
@@ -189,6 +198,10 @@ export default {
 			snackbarMessage: "",
 			alert: false,
 			alertMessage: "",
+
+			snackbarDelete: false,
+			snackbarDeleteMessage: "",
+			snackbarDeleteStatus: "error",
 		};
 	},
 
@@ -295,6 +308,28 @@ export default {
 				this.emailRules = [(v) => !!v || "Email is required"];
 			}
 		},
+		deletePass(account) {
+			this.$electron.send("DELETE_ACCOUNT", {
+				id: account._id,
+				plateform: account.plateform,
+			});
+			this.$electron.once("DELETE_ACCOUNT_REPLY", (event, arg) => {
+				if (arg.status === "error") {
+					this.snackbarDeleteMessage = arg.message;
+					this.snackbarDeleteStatus = "error";
+					this.snackbarDelete = true;
+				} else {
+					this.snackbarDeleteMessage = arg.message;
+					this.snackbarDeleteStatus = "success";
+					this.snackbarDelete = true;
+					this.$electron.send("GET_TABLE");
+					this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
+						this.data = arg;
+					});
+				}
+			});
+		},
+		editPass(account) {},
 	},
 };
 </script>

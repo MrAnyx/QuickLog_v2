@@ -220,48 +220,63 @@ ipcMain.on("IS_USER_CONNECTED", (event, arg) => {
 
 // ? New account
 ipcMain.on("POST_NEW_ACCOUNT", (event, arg) => {
-	data.find({uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString()},function(err, docs) {
-			if (err) {
-				event.reply("POST_NEW_ACCOUNT_REPLY", {
-					status: "error",
-					message: `An error occured, please try again`,
+	data.find({ uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString() }, function(err, docs) {
+		if (err) {
+			event.reply("POST_NEW_ACCOUNT_REPLY", {
+				status: "error",
+				message: `An error occured, please try again`,
+			});
+		} else {
+			if (docs.length === 0) {
+				let account = {
+					_id: uuidv4(),
+					plateform: arg.plateform,
+					username: arg.username,
+					email: arg.email,
+					password: CryptoJS.AES.encrypt(arg.password, store.get("vaultKey")).toString(),
+					categories: arg.category,
+					custom: arg.custom,
+					uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString(),
+					owner: {
+						uuid: store.get("uuid"),
+						username: store.get("username"),
+					},
+				};
+				data.insert(account, function(err, newDoc) {
+					if (err) {
+						event.reply("POST_NEW_ACCOUNT_REPLY", {
+							status: "error",
+							message: `An error occured, please try again`,
+						});
+					} else {
+						event.reply("POST_NEW_ACCOUNT_REPLY", {
+							status: "success",
+							message: `${newDoc.plateform} account has been added successfully`,
+						});
+					}
 				});
 			} else {
-				if (docs.length === 0) {
-					let account = {
-						_id: uuidv4(),
-						plateform: arg.plateform,
-						username: arg.username,
-						email: arg.email,
-						password: CryptoJS.AES.encrypt(arg.password, store.get("vaultKey")).toString(),
-						categories: arg.category,
-						custom: arg.custom,
-						uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString(),
-						owner: {
-							uuid: store.get("uuid"),
-							username: store.get("username"),
-						},
-					};
-					data.insert(account, function(err, newDoc) {
-						if (err) {
-							event.reply("POST_NEW_ACCOUNT_REPLY", {
-								status: "error",
-								message: `An error occured, please try again`,
-							});
-						} else {
-							event.reply("POST_NEW_ACCOUNT_REPLY", {
-								status: "success",
-								message: `${newDoc.plateform} account has been added successfully`,
-							});
-						}
-					});
-				} else {
-					event.reply("POST_NEW_ACCOUNT_REPLY", {
-						status: "error",
-						message: `This account already exists`,
-					});
-				}
+				event.reply("POST_NEW_ACCOUNT_REPLY", {
+					status: "error",
+					message: `This account already exists`,
+				});
 			}
 		}
-	);
+	});
+});
+
+ipcMain.on("DELETE_ACCOUNT", (event, arg) => {
+	data.remove({ _id: arg.id }, {}, function(err, numRemoved) {
+		if(err){
+			event.reply("DELETE_ACCOUNT_REPLY", {
+				status: "error",
+				message: "An error occured, please try again"
+			})
+		}else {
+			event.reply("DELETE_ACCOUNT_REPLY", {
+				status: "success",
+				message: `${arg.plateform} has been deleted successfully`
+			})
+		}
+	});
 });
