@@ -126,7 +126,7 @@
 			</v-card>
 		</v-dialog>
 
-		<v-snackbar v-model="snackbar" text color="success">
+		<v-snackbar v-model="snackbar" text :color="snackbarStatus">
 			{{ snackbarMessage }}
 			<template v-slot:action="{ attrs }">
 				<v-btn text v-bind="attrs" @click="snackbar = false">
@@ -135,14 +135,6 @@
 			</template>
 		</v-snackbar>
 
-		<v-snackbar v-model="snackbarDelete" text :color="snackbarDeleteStatus">
-			{{ snackbarDeleteMessage }}
-			<template v-slot:action="{ attrs }">
-				<v-btn text v-bind="attrs" @click="snackbarDelete = false">
-					Close
-				</v-btn>
-			</template>
-		</v-snackbar>
 	</div>
 </template>
 
@@ -196,12 +188,9 @@ export default {
 
 			snackbar: false,
 			snackbarMessage: "",
+			snackbarStatus: "",
 			alert: false,
 			alertMessage: "",
-
-			snackbarDelete: false,
-			snackbarDeleteMessage: "",
-			snackbarDeleteStatus: "error",
 		};
 	},
 
@@ -278,6 +267,7 @@ export default {
 					this.dialog = false;
 					this.$refs.form.reset();
 					this.snackbarMessage = arg.message;
+					this.snackbarStatus = "success";
 					this.$electron.send("GET_TABLE");
 					this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
 						this.data = arg;
@@ -315,13 +305,13 @@ export default {
 			});
 			this.$electron.once("DELETE_ACCOUNT_REPLY", (event, arg) => {
 				if (arg.status === "error") {
-					this.snackbarDeleteMessage = arg.message;
-					this.snackbarDeleteStatus = "error";
-					this.snackbarDelete = true;
+					this.snackbarMessage = arg.message;
+					this.snackbarStatus = "error";
+					this.snackbar = true;
 				} else {
-					this.snackbarDeleteMessage = arg.message;
-					this.snackbarDeleteStatus = "success";
-					this.snackbarDelete = true;
+					this.snackbarMessage = arg.message;
+					this.snackbarStatus = "success";
+					this.snackbar = true;
 					this.$electron.send("GET_TABLE");
 					this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
 						this.data = arg;
@@ -329,7 +319,9 @@ export default {
 				}
 			});
 		},
-		editPass(account) {},
+		editPass(account) {
+			
+		},
 	},
 };
 </script>
