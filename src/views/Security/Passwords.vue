@@ -5,21 +5,40 @@
 			<thead>
 				<tr>
 					<th class="text-left">
-						Name
+						Plateform
 					</th>
 					<th class="text-left">
-						Calories
+						Email
 					</th>
 					<th class="text-left">
-						uuid
+						Categories
+					</th>
+					<th class="text-left">
+						Options
 					</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="item in []" :key="item.uuid" @click.stop="displayInfo(item)">
-					<td>{{ item.name }}</td>
-					<td>{{ item.calories }}</td>
-					<td>{{ item.uuid }}</td>
+				<tr v-for="item in data" :key="item.uuid" @click.stop="displayInfo(item)">
+					<td>{{ item.plateform }}</td>
+					<td>{{ item.email }}</td>
+					<td>
+						<v-chip-group max="3">
+							<v-chip v-for="category in item.categories" :key="category" small>
+								{{ category }}
+							</v-chip>
+						</v-chip-group>
+					</td>
+					<td>
+						<v-btn small outlined color="error" class="mr-3" @click.stop="">
+							<v-icon>mdi-trash-can-outline</v-icon>
+							Delete
+						</v-btn>
+						<v-btn small text color="success" @click.stop="">
+							<v-icon>mdi-pencil-outline</v-icon>
+							Edit
+						</v-btn>
+					</td>
 				</tr>
 			</tbody>
 		</v-simple-table>
@@ -50,6 +69,7 @@
 
 			<v-card class="py-6 px-8">
 				<h4 class="text-center text-h4 mb-6">New account</h4>
+				<v-alert border="left" text type="error" v-if="alert">{{ alertMessage }}</v-alert>
 				<v-form ref="form" v-model="valid">
 					<h6 class="text-h6">Essential informations</h6>
 					<v-text-field required type="text" label="Plateform" prepend-icon="mdi-search-web" v-model="plateform" :rules="plateformRules"></v-text-field>
@@ -62,11 +82,25 @@
 						<v-checkbox v-model="emailEnabled" hide-details class="shrink mr-2 mt-0" @click="emailCheck()" :rules="checkboxRules"></v-checkbox>
 						<v-text-field :disabled="!emailEnabled" label="Email" prepend-icon="mdi-at" v-model="email" :rules="emailRules"></v-text-field>
 					</v-row>
-					<v-text-field required type="password" label="Password" prepend-icon="mdi-lock-outline" v-model="password" :rules="passwordRules"></v-text-field>
+					<v-text-field required type="password" label="Password" prepend-icon="mdi-lock-outline" v-model="password" :rules="passwordRules">
+						<template v-slot:append-outer>
+							<v-btn text @click="autoGeneratePass()">
+								<v-icon left>
+									mdi-creation
+								</v-icon>
+								Auto-generate
+							</v-btn>
+						</template>
+					</v-text-field>
 
 					<h6 class="text-h6 mt-5">Options</h6>
 					<v-combobox v-model="select" :items="items" label="Category" clearable multiple small-chips prepend-icon="mdi-shape-outline"></v-combobox>
-					<v-text-field required type="text" label="Custom category" v-model="custom" v-if="displayCustomCategory" :rules="customRules"></v-text-field>
+					<v-text-field type="text" label="Custom category" hint="You can add multiple custom category by separating them with a space" v-model="custom" @keyup="createCustomChips()" v-if="displayCustomCategory" :rules="customRules"></v-text-field>
+					<v-chip-group v-if="custom">
+						<v-chip v-for="chip in customChips" :key="chip">
+							{{ chip }}
+						</v-chip>
+					</v-chip-group>
 
 					<div class="mt-5">
 						<v-btn class="mr-3" color="primary" @click="validate" :disabled="!valid" :loading="loading">Add</v-btn>
@@ -75,10 +109,21 @@
 				</v-form>
 			</v-card>
 		</v-dialog>
+
+		<v-snackbar v-model="snackbar">
+			{{ snackbarMessage }}
+			<template v-slot:action="{ attrs }">
+				<v-btn color="blue" text v-bind="attrs" @click="snackbar = false">
+					Close
+				</v-btn>
+			</template>
+		</v-snackbar>
 	</div>
 </template>
 
 <script>
+const cryptoRandomString = require("crypto-random-string");
+
 export default {
 	name: "Passwords",
 	data() {
@@ -101,12 +146,14 @@ export default {
 
 			valid: true,
 			loading: false,
+
 			plateform: "",
 			username: "",
 			email: "",
 			password: "",
-			custom: "",
 			select: [],
+			custom: "",
+			customChips: [],
 
 			userEnabled: false,
 			emailEnabled: false,
@@ -120,6 +167,11 @@ export default {
 
 			items: ["Social", "Entrainement", "Professional", "Custom"],
 			displayCustomCategory: false,
+
+			snackbar: false,
+			snackbarMessage: "",
+			alert: false,
+			alertMessage: "",
 		};
 	},
 
@@ -127,6 +179,7 @@ export default {
 		select: "displayCustomCategoryFunction",
 		userEnabled: "checkboxUpdateValid",
 		emailEnabled: "checkboxUpdateValid",
+		data: "updateTable",
 	},
 
 	mounted() {
@@ -136,6 +189,15 @@ export default {
 		});
 	},
 	methods: {
+		autoGeneratePass() {
+			this.password = cryptoRandomString({length: 25, type: 'ascii-printable'});;
+		},
+		updateTable() {
+			this.$electron.send("GET_TABLE");
+			this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
+				this.data = arg;
+			});
+		},
 		checkboxUpdateValid() {
 			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
 				this.checkboxRules = [true || "Is required"];
@@ -154,19 +216,44 @@ export default {
 				this.custom = "";
 				this.customRules = [];
 				this.displayCustomCategory = false;
+				this.customChips = [];
 			}
+		},
+		createCustomChips() {
+			this.customChips = this.custom.trim().split(" ");
 		},
 		validate() {
 			this.$refs.form.validate();
 
 			this.loading = true;
-			this.valid = !this.valid;
+
+			this.$electron.send("POST_NEW_ACCOUNT", {
+				plateform: this.plateform,
+				username: this.username,
+				email: this.email,
+				password: this.password,
+				category: this.select,
+				custom: this.customChips,
+			});
+
+			this.$electron.once("POST_NEW_ACCOUNT_REPLY", (event, arg) => {
+				if (arg.status === "error") {
+					this.alert = true;
+					this.alertMessage = arg.message;
+					this.loading = false;
+				} else {
+					this.snackbar = true;
+					this.dialog = false;
+					this.snackbarMessage = arg.message;
+				}
+			});
 		},
 		cancelModal() {
 			this.$refs.form.reset();
 			this.dialog = false;
 			this.loading = false;
-			this.valid = true;
+			this.alert = false;
+			this.alertMessage = "";
 		},
 		usernameCheck() {
 			if (!this.userEnabled) {

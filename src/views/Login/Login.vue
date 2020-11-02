@@ -42,7 +42,6 @@ export default {
 			this.$refs.form.validate();
 
 			this.loading = true;
-			this.valid = !this.valid;
 
 			this.$electron.send("POST_LOGIN", {
 				username: this.username,
@@ -57,12 +56,10 @@ export default {
 				if (arg.status === "success") {
 					setTimeout(() => {
 						this.loading = false;
-						this.valid = !this.valid;
 						this.$router.push("passwords")
 					}, 2000)
 				} else {
 					this.loading = false;
-					this.valid = !this.valid;
 				}
 			});
 		}
