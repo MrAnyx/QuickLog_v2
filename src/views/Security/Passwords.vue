@@ -50,8 +50,8 @@
 		<!-- modal pour ajouter un nouveau mdp -->
 		<v-dialog v-model="dialog" persistent max-width="50%">
 			<!-- Button bottom right -->
-			<template v-slot:activator="{ on, attrs }">
-				<v-speed-dial v-model="fab" :top="top" :bottom="bottom" :right="right" :left="left" :direction="direction" :open-on-hover="hover" :transition="transition">
+			<template v-slot:activator="{ on: dialog, attrs }">
+				<v-speed-dial v-model="fab" :top="top" :bottom="bottom" :right="right" :left="left" :direction="direction" :transition="transition">
 					<template v-slot:activator>
 						<v-btn v-model="fab" color="blue darken-2" dark fab>
 							<v-icon v-if="fab">
@@ -62,9 +62,24 @@
 							</v-icon>
 						</v-btn>
 					</template>
-					<v-btn fab dark small color="green" v-bind="attrs" v-on="on">
-						<v-icon>mdi-plus</v-icon>
-					</v-btn>
+
+					<v-tooltip left>
+						<template v-slot:activator="{ on: tooltip }">
+							<v-btn fab dark small color="green" v-bind="attrs" v-on="{ ...tooltip, ...dialog }">
+								<v-icon>mdi-plus</v-icon>
+							</v-btn>
+						</template>
+						<span>Add an account</span>
+					</v-tooltip>
+
+					<v-tooltip left>
+						<template v-slot:activator="{ on, attrs }">
+							<v-btn fab dark small color="blue" :loading="loadingRefresh" @click="refresh()" v-bind="attrs" v-on="on">
+								<v-icon>mdi-refresh</v-icon>
+							</v-btn>
+						</template>
+						<span>Refresh</span>
+					</v-tooltip>
 				</v-speed-dial>
 			</template>
 
@@ -142,6 +157,7 @@ export default {
 			left: false,
 			bottom: true,
 			transition: "slide-y-reverse-transition",
+			loadingRefresh: false,
 
 			dialog: false,
 
@@ -189,8 +205,16 @@ export default {
 		});
 	},
 	methods: {
+		refresh() {
+			this.loadingRefresh = true;
+			this.$electron.send("GET_TABLE");
+			this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
+				this.data = arg;
+				this.loadingRefresh = false;
+			});
+		},
 		autoGeneratePass() {
-			this.password = cryptoRandomString({length: 25, type: 'ascii-printable'});;
+			this.password = cryptoRandomString({ length: 25, type: "ascii-printable" });
 		},
 		checkboxUpdateValid() {
 			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
@@ -205,7 +229,7 @@ export default {
 		displayCustomCategoryFunction() {
 			if (this.select.includes("Custom")) {
 				this.displayCustomCategory = true;
-				this.customRules = [(v) => !!v || "Custom category is required", (v) => this.customChips.filter(c => c.length > 15).length === 0 || "Custom categories must be less then 20 charateres"];
+				this.customRules = [(v) => !!v || "Custom category is required", (v) => this.customChips.filter((c) => c.length > 15).length === 0 || "Custom categories must be less then 20 charateres"];
 			} else {
 				this.custom = "";
 				this.customRules = [];
@@ -239,7 +263,7 @@ export default {
 					this.loading = false;
 					this.snackbar = true;
 					this.dialog = false;
-					this.$refs.form.reset()
+					this.$refs.form.reset();
 					this.snackbarMessage = arg.message;
 					this.$electron.send("GET_TABLE");
 					this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
@@ -285,7 +309,7 @@ export default {
 	position: relative;
 }
 
-#options{
+#options {
 	min-width: 150px;
 }
 </style>
