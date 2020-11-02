@@ -13,7 +13,7 @@
 					<th class="text-left">
 						Categories
 					</th>
-					<th class="text-left">
+					<th class="text-left" id="options">
 						Options
 					</th>
 				</tr>
@@ -23,20 +23,21 @@
 					<td>{{ item.plateform }}</td>
 					<td>{{ item.email }}</td>
 					<td>
-						<v-chip-group max="3">
-							<v-chip v-for="category in item.categories" :key="category" small>
+						<v-chip-group>
+							<v-chip v-for="category in item.categories" :key="category" small color="primary">
+								{{ category }}
+							</v-chip>
+							<v-chip v-for="(category, index) in item.custom" :key="category" small v-show="index < 2">
 								{{ category }}
 							</v-chip>
 						</v-chip-group>
 					</td>
 					<td>
-						<v-btn small outlined color="error" class="mr-3" @click.stop="">
-							<v-icon>mdi-trash-can-outline</v-icon>
-							Delete
+						<v-btn x-small outlined color="error" class="mr-3" @click.stop="">
+							<v-icon small>mdi-trash-can-outline</v-icon>
 						</v-btn>
-						<v-btn small text color="success" @click.stop="">
-							<v-icon>mdi-pencil-outline</v-icon>
-							Edit
+						<v-btn x-small text color="success" @click.stop="">
+							<v-icon small>mdi-pencil-outline</v-icon>
 						</v-btn>
 					</td>
 				</tr>
@@ -179,7 +180,6 @@ export default {
 		select: "displayCustomCategoryFunction",
 		userEnabled: "checkboxUpdateValid",
 		emailEnabled: "checkboxUpdateValid",
-		data: "updateTable",
 	},
 
 	mounted() {
@@ -191,12 +191,6 @@ export default {
 	methods: {
 		autoGeneratePass() {
 			this.password = cryptoRandomString({length: 25, type: 'ascii-printable'});;
-		},
-		updateTable() {
-			this.$electron.send("GET_TABLE");
-			this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
-				this.data = arg;
-			});
 		},
 		checkboxUpdateValid() {
 			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
@@ -211,7 +205,7 @@ export default {
 		displayCustomCategoryFunction() {
 			if (this.select.includes("Custom")) {
 				this.displayCustomCategory = true;
-				this.customRules = [(v) => !!v || "Custom category is required"];
+				this.customRules = [(v) => !!v || "Custom category is required", (v) => this.customChips.filter(c => c.length > 15).length === 0 || "Custom categories must be less then 20 charateres"];
 			} else {
 				this.custom = "";
 				this.customRules = [];
@@ -242,9 +236,15 @@ export default {
 					this.alertMessage = arg.message;
 					this.loading = false;
 				} else {
+					this.loading = false;
 					this.snackbar = true;
 					this.dialog = false;
+					this.$refs.form.reset()
 					this.snackbarMessage = arg.message;
+					this.$electron.send("GET_TABLE");
+					this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
+						this.data = arg;
+					});
 				}
 			});
 		},
@@ -283,5 +283,9 @@ export default {
 
 #passwords .v-btn--floating {
 	position: relative;
+}
+
+#options{
+	min-width: 150px;
 }
 </style>

@@ -200,10 +200,9 @@ ipcMain.on("POST_LOGIN", (event, arg) => {
 
 // ? Get data
 ipcMain.on("GET_TABLE", (event, arg) => {
-	data.find({owner: {uuid: store.get("uuid"), username: store.get("username")}}, function(err, docs) {
-
+	data.find({ owner: { uuid: store.get("uuid"), username: store.get("username") } }, function(err, docs) {
 		event.reply("GET_TABLE_REPLY", docs);
-	})
+	});
 });
 
 // ? return true if the user is connected and false if not
@@ -220,31 +219,48 @@ ipcMain.on("IS_USER_CONNECTED", (event, arg) => {
 });
 
 ipcMain.on("POST_NEW_ACCOUNT", (event, arg) => {
-	let account = {
-		_id: uuidv4(),
-		plateform: arg.plateform,
-		username: arg.username,
-		email: arg.email,
-		password: CryptoJS.AES.encrypt(arg.password, store.get("vaultKey")).toString(),
-		categories: arg.category,
-		custom: arg.custom,
-		owner: {
-			uuid: store.get("uuid"),
-			username: store.get("username")
-		},
-	};
-	data.insert(account, function(err, newDoc) {
-		console.log(err)
-		if(err) {
-			event.reply("POST_NEW_ACCOUNT_REPLY", {
-				status: "error",
-				message: `An error occured, please try again`
-			});
-		} else {
-			event.reply("POST_NEW_ACCOUNT_REPLY", {
-				status: "success",
-				message: `${newDoc.plateform} account has been added successfully`
-			});
+	data.find({uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString()},function(err, docs) {
+			if (err) {
+				event.reply("POST_NEW_ACCOUNT_REPLY", {
+					status: "error",
+					message: `An error occured, please try again`,
+				});
+			} else {
+				if (docs.length === 0) {
+					let account = {
+						_id: uuidv4(),
+						plateform: arg.plateform,
+						username: arg.username,
+						email: arg.email,
+						password: CryptoJS.AES.encrypt(arg.password, store.get("vaultKey")).toString(),
+						categories: arg.category,
+						custom: arg.custom,
+						uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString(),
+						owner: {
+							uuid: store.get("uuid"),
+							username: store.get("username"),
+						},
+					};
+					data.insert(account, function(err, newDoc) {
+						if (err) {
+							event.reply("POST_NEW_ACCOUNT_REPLY", {
+								status: "error",
+								message: `An error occured, please try again`,
+							});
+						} else {
+							event.reply("POST_NEW_ACCOUNT_REPLY", {
+								status: "success",
+								message: `${newDoc.plateform} account has been added successfully`,
+							});
+						}
+					});
+				} else {
+					event.reply("POST_NEW_ACCOUNT_REPLY", {
+						status: "error",
+						message: `This account already exists`,
+					});
+				}
+			}
 		}
-	});
+	);
 });
