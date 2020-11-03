@@ -15,11 +15,17 @@ import Redirect from "@/views/Redirect/Redirect";
 
 import Page404 from "@/views/Error/Page404";
 
+import Settings from "@/views/Other/Settings";
+
 Vue.use(VueRouter);
 
 const routes = [
 	{
 		path: "/",
+		redirect: "redirect"
+	},
+	{
+		path: "/index.html",
 		redirect: "redirect"
 	},
 	{
@@ -56,6 +62,11 @@ const routes = [
 		path: "/redirect",
 		name: "redirect",
 		component: Redirect,
+	},
+	{
+		path: "/settings",
+		name: "settings",
+		component: Settings,
 	},
 	{
 		path: "*",

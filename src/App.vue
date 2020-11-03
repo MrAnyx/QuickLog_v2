@@ -18,6 +18,24 @@
 					</v-list-item>
 				</div>
 			</v-list>
+
+			<template v-slot:append>
+				<v-row class="px-3">
+					<v-col>
+						<v-btn text color="red">
+							Logout
+						</v-btn>
+					</v-col>
+					<v-spacer></v-spacer>
+					<v-col>
+						<v-btn text to="/settings">
+							<v-icon>
+								mdi-cog-outline
+							</v-icon>
+						</v-btn>
+					</v-col>
+				</v-row>
+			</template>
 		</v-navigation-drawer>
 
 		<v-main>
@@ -44,7 +62,7 @@ export default {
 				links: [["mdi-view-dashboard-outline", "Dashboard", "/dashboard"]],
 			},
 		],
-		displaySideBarVariable: false
+		displaySideBarVariable: false,
 	}),
 	watch: {
 		$route: function() {

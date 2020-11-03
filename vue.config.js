@@ -17,7 +17,7 @@ module.exports = {
 					createStartMenuShortcut: true,
 				},
 				productName: "QuickLog",
-				copyright: "Copyright © year 2020"
+				copyright: "Copyright © 2020 by MrAnyx"
 			},
 		},
 	},
