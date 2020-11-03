@@ -3,12 +3,22 @@ module.exports = {
 	pluginOptions: {
 		electronBuilder: {
 			preload: "src/preload.js",
-			win: {
-				icon: "logo.ico",
-				title: "QuickLog",
-				msi: true
+			builderOptions: {
+				win: {
+					icon: "logo.ico",
+					signingHashAlgorithms: ['sha256'],
+					target: "nsis"
+				},
+				nsis: {
+					oneClick: false,
+					allowToChangeInstallationDirectory: true,
+					installerIcon: "logo.ico",
+					createDesktopShortcut: true,
+					createStartMenuShortcut: true,
+				},
+				productName: "QuickLog",
+				copyright: "Copyright © year 2020"
 			},
-			productName: "QuickLog",
 		},
 	},
 };
