@@ -66,13 +66,13 @@ export default {
 	}),
 	watch: {
 		$route: function() {
-			if (this.$route.name !== "login" && this.$route.name !== "register" && this.$route.name !== "404" && this.$route.name !== "redirect") {
+			if (this.$route.path !== "/login" && this.$route.path !== "/register" && this.$route.path !== "/" && this.$route.name !== "404") {
 				this.displaySideBarVariable = true;
 			}
 		},
 	},
 	mounted() {
-		if (this.$route.name !== "login" && this.$route.name !== "register" && this.$route.name !== "404" && this.$route.name !== "redirect") {
+		if (this.$route.path !== "/login" && this.$route.path !== "/register" && this.$route.path !== "/" && this.$route.name !== "404") {
 			this.displaySideBarVariable = true;
 		}
 	},

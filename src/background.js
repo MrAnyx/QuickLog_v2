@@ -331,3 +331,12 @@ ipcMain.on("POST_EDIT_ACCOUNT", (event, arg) => {
 		}
 	);
 });
+
+
+ipcMain.on("STORE_GET", (event, arg) => {
+	event.reply("STORE_GET_REPLY", store.get(arg))
+})
+
+ipcMain.on("IS_CONNECTED", (event, arg) => {
+	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true)
+})

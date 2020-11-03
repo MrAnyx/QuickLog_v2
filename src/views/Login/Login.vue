@@ -56,7 +56,7 @@ export default {
 				if (arg.status === "success") {
 					setTimeout(() => {
 						this.loading = false;
-						this.$router.push("passwords")
+						this.$router.push({ name: 'passwords' })
 					}, 2000)
 				} else {
 					this.loading = false;
