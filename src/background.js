@@ -340,3 +340,18 @@ ipcMain.on("STORE_GET", (event, arg) => {
 ipcMain.on("IS_CONNECTED", (event, arg) => {
 	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true)
 })
+
+ipcMain.on("LOGOUT", (event, arg) => {
+	try{
+		store.clear();
+	} catch(e) {
+		event.reply("LOGOUT_REPLY", {
+			status: "error",
+			message: "An error occured during your disconnection"
+		})
+	}
+	event.reply("LOGOUT_REPLY", {
+		status: "success",
+		message: "OK"
+	})
+})

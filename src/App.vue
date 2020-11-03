@@ -22,7 +22,7 @@
 			<template v-slot:append>
 				<v-row class="px-3">
 					<v-col>
-						<v-btn text color="red">
+						<v-btn text color="red" @click.stop="logout()">
 							Logout
 						</v-btn>
 					</v-col>
@@ -40,6 +40,15 @@
 
 		<v-main>
 			<router-view></router-view>
+
+			<v-snackbar v-model="snackbar" :color="snackbarColor" text>
+				{{ snackbarMessage }}
+				<template v-slot:action="{ attrs }">
+					<v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+						Close
+					</v-btn>
+				</template>
+			</v-snackbar>
 		</v-main>
 	</v-app>
 </template>
@@ -63,18 +72,40 @@ export default {
 			},
 		],
 		displaySideBarVariable: false,
+
+		snackbar: false,
+		snackbarMessage: "",
+		snackbarColor: "",
 	}),
 	watch: {
 		$route: function() {
 			if (this.$route.path !== "/login" && this.$route.path !== "/register" && this.$route.path !== "/" && this.$route.name !== "404") {
 				this.displaySideBarVariable = true;
+			} else {
+				this.displaySideBarVariable = false;
 			}
 		},
 	},
 	mounted() {
 		if (this.$route.path !== "/login" && this.$route.path !== "/register" && this.$route.path !== "/" && this.$route.name !== "404") {
 			this.displaySideBarVariable = true;
-		}
+		} else {
+				this.displaySideBarVariable = false;
+			}
+	},
+	methods: {
+		logout() {
+			this.$electron.send("LOGOUT");
+			this.$electron.once("LOGOUT_REPLY", (event, arg) => {
+				if (arg.status === "error") {
+					this.snackbar = true;
+					this.snackbarMessage = arg.message;
+					this.snackbarColor = arg.status;
+				} else {
+					this.$router.push("/login");
+				}
+			});
+		},
 	},
 };
 </script>
