@@ -2,7 +2,6 @@
 	<div>
 		<v-toolbar flat light>
 			<v-toolbar-title>Settings</v-toolbar-title>
-			
 		</v-toolbar>
 		<v-divider></v-divider>
 		<v-tabs vertical>
@@ -21,6 +20,16 @@
 						<p>Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi ac felis. Etiam feugiat lorem non metus. Sed a libero.</p>
 						<p>Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Aliquam lobortis. Aliquam lobortis. Suspendisse non nisl sit amet velit hendrerit rutrum.</p>
 						<p class="mb-0">Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Phasellus blandit leo ut odio.</p>
+
+						<v-slider v-model="value" step="1" class="align-center" max="40" min="8" thumb-label hide-details>
+							<template v-slot:thumb-label="{ value }">
+								{{ satisfactionEmojis[Math.min(Math.floor(value / 10), 9)] }}
+							</template>
+							<template v-slot:append>
+								<v-text-field v-model="value" class="mt-0 pt-0" hide-details single-line type="number" style="width: 60px"></v-text-field>
+							</template>
+							
+						</v-slider>
 					</v-card-text>
 				</v-card>
 			</v-tab-item>
@@ -39,5 +48,11 @@
 <script>
 export default {
 	name: "Settings",
+	data() {
+		return {
+			value: 20,
+			satisfactionEmojis: ['😭', '😢', '☹️', '🙁', '😐', '🙂', '😊', '😁', '😄', '😍'],
+		};
+	},
 };
 </script>
