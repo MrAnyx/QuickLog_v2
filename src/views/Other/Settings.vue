@@ -5,33 +5,31 @@
 		</v-toolbar>
 		<v-divider></v-divider>
 		<v-tabs vertical>
-			<v-tab>
+			<v-tab left>
 				<v-icon left>mdi-account</v-icon>
-				Option 1
+				Configuration
 			</v-tab>
 			<v-tab>
 				<v-icon left>mdi-lock</v-icon>
 				Option 2
 			</v-tab>
 
-			<v-tab-item>
-				<v-card flat>
-					<v-card-text>
-						<p>Sed aliquam ultrices mauris. Donec posuere vulputate arcu. Morbi ac felis. Etiam feugiat lorem non metus. Sed a libero.</p>
-						<p>Nam ipsum risus, rutrum vitae, vestibulum eu, molestie vel, lacus. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Aliquam lobortis. Aliquam lobortis. Suspendisse non nisl sit amet velit hendrerit rutrum.</p>
-						<p class="mb-0">Phasellus dolor. Fusce neque. Fusce fermentum odio nec arcu. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Phasellus blandit leo ut odio.</p>
+			<v-tab-item class="pa-5">
+				<h6 class="text-h6">Characters & symbols</h6>
+				<v-checkbox v-model="cases" label="Include lower case characters" value="lower" :rules="checkboxRules"></v-checkbox>
+				<v-checkbox v-model="cases" label="Include upper case characters" value="upper" :rules="checkboxRules"></v-checkbox>
+				<v-checkbox v-model="cases" label="Include numeric values" value="numeric" :rules="checkboxRules"></v-checkbox>
+				<v-checkbox v-model="special" label="Include symbols"></v-checkbox>
+				<v-slider v-model="value" step="1" class="align-center" max="40" min="8" thumb-label hide-details>
+					<template v-slot:thumb-label="{ value }">
+						<v-icon color="white">{{ weakness[Math.floor((value * 3) / 40)] }}</v-icon>
+					</template>
+					<template v-slot:append>
+						<v-text-field v-model="value" class="mt-0 pt-0" max="40" min="8" hide-details single-line type="number" style="width: 60px"></v-text-field>
+					</template>
+				</v-slider>
 
-						<v-slider v-model="value" step="1" class="align-center" max="40" min="8" thumb-label hide-details>
-							<template v-slot:thumb-label="{ value }">
-								{{ satisfactionEmojis[Math.min(Math.floor(value / 10), 9)] }}
-							</template>
-							<template v-slot:append>
-								<v-text-field v-model="value" class="mt-0 pt-0" hide-details single-line type="number" style="width: 60px"></v-text-field>
-							</template>
-							
-						</v-slider>
-					</v-card-text>
-				</v-card>
+				<v-text-field v-model="example" readonly solo></v-text-field>
 			</v-tab-item>
 			<v-tab-item>
 				<v-card flat>
@@ -46,13 +44,22 @@
 </template>
 
 <script>
+const cryptoRandomString = require('crypto-random-string');
 export default {
 	name: "Settings",
 	data() {
 		return {
 			value: 20,
-			satisfactionEmojis: ['😭', '😢', '☹️', '🙁', '😐', '🙂', '😊', '😁', '😄', '😍'],
+			weakness: ["mdi-alert-circle-outline", "mdi-check", "mdi-arm-flex"],
+			cases: ["lower", "upper", "numeric"],
+			special: true,
+
+			checkboxRules: [(v) => this.cases.length > 0 || "You must select at least one case type"],
+
+			example: "bonjour",
 		};
 	},
+
+	
 };
 </script>
