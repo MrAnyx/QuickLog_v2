@@ -1,17 +1,21 @@
 <template>
 	<div>
 		<v-toolbar flat light>
-			<v-toolbar-title>Settings</v-toolbar-title>
+			<span class="headline">
+				Settings
+			</span>
+			<v-btn color="primary" class="ml-auto" v-if="changes" @click.stop="applyChanges">Apply changes</v-btn>
 		</v-toolbar>
 		<v-divider></v-divider>
 		<v-tabs vertical>
 			<v-tab left>
-				<v-icon left>mdi-account</v-icon>
+				<v-icon left>mdi-cog</v-icon>
 				Configuration
 			</v-tab>
-			<v-tab>
-				<v-icon left>mdi-lock</v-icon>
-				Option 2
+			<v-tab left>
+				<v-icon left>mdi-account</v-icon>
+				Account
+				<v-spacer></v-spacer>
 			</v-tab>
 
 			<v-tab-item class="pa-5">
@@ -20,6 +24,8 @@
 				<v-checkbox v-model="cases" label="Include upper case characters" value="upper" :rules="checkboxRules"></v-checkbox>
 				<v-checkbox v-model="cases" label="Include numeric values" value="numeric" :rules="checkboxRules"></v-checkbox>
 				<v-checkbox v-model="special" label="Include symbols"></v-checkbox>
+
+				<h6 class="text-h6 mt-5">value</h6>
 				<v-slider v-model="value" step="1" class="align-center" max="40" min="8" thumb-label hide-details>
 					<template v-slot:thumb-label="{ value }">
 						<v-icon color="white">{{ weakness[Math.floor((value * 3) / 40)] }}</v-icon>
@@ -29,7 +35,8 @@
 					</template>
 				</v-slider>
 
-				<v-text-field v-model="example" readonly solo></v-text-field>
+				<h6 class="text-h6 mt-5">Example</h6>
+				<v-text-field v-model="example" readonly solo single-line></v-text-field>
 			</v-tab-item>
 			<v-tab-item>
 				<v-card flat>
@@ -44,22 +51,61 @@
 </template>
 
 <script>
-const cryptoRandomString = require('crypto-random-string');
+const cryptoRandomString = require("crypto-random-string");
+var shuffle = require("shuffle-array");
+
 export default {
 	name: "Settings",
 	data() {
 		return {
-			value: 20,
+			value: 25,
 			weakness: ["mdi-alert-circle-outline", "mdi-check", "mdi-arm-flex"],
 			cases: ["lower", "upper", "numeric"],
 			special: true,
 
 			checkboxRules: [(v) => this.cases.length > 0 || "You must select at least one case type"],
 
-			example: "bonjour",
+			example: "",
+
+			changes: false,
+
+			stringlist: "",
 		};
 	},
+	watch: {
+		cases: "updateChanges",
+		value: "updateChanges",
+		special: "updateChanges",
+	},
+	mounted() {
+		this.generateExample();
+	},
+	methods: {
+		generateExample() {
+			this.stringlist = "";
+			if (this.cases.includes("lower")) {
+				this.stringlist += "abcdefghijklmnopqrstuvwxyz";
+			}
+			if (this.cases.includes("upper")) {
+				this.stringlist += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			}
+			if (this.cases.includes("numeric")) {
+				this.stringlist += "0123456789";
+			}
+			if (this.special) {
+				this.stringlist += "!#$%&()*+,-./:;<=>?@[]^_{|}~";
+			}
+			this.example = cryptoRandomString({ length: this.value, characters: shuffle(this.stringlist.split("")).join("") });
+		},
+		updateChanges() {
+			this.changes = true;
+			this.generateExample()
+		},
+		applyChanges() {
+			this.changes = false;
 
-	
+			// finir la fonction ici
+		}
+	},
 };
 </script>
