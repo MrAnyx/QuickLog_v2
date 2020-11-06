@@ -26,6 +26,7 @@ fs.mkdir(path.join(os.tmpdir(), "quicklog", "storage"), { recursive: true }, (er
 // sqs pour Secure QuickLog Storage
 var data = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "data.sqs"), autoload: true });
 var auth = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "auth.sqs"), autoload: true });
+var options = new Datastore({ filename: path.join(os.tmpdir(), "quicklog", "storage", "options.sqs"), autoload: true });
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -142,16 +143,38 @@ ipcMain.on("POST_REGISTER", (event, arg) => {
 					salt: salt,
 				};
 				auth.insert(user, function(err, newDoc) {
-					if (!err) {
-						event.reply("POST_REGISTER_REPLY", {
-							status: "success",
-							message: "You account has been created successfully. You will be automatically redirected to the login page",
-						});
-					} else {
+					if (err) {
 						event.reply("POST_REGISTER_REPLY", {
 							status: "error",
 							message: "An error occured during the registration",
 						});
+					} else {
+						options.insert({
+							user: arg.username,
+							uuid: newDoc._id,
+							options: {
+								passwords: {
+									length: 25, // default length
+									upper: true,
+									lower: true,
+									special: true,
+									numeric: true
+								}
+							}
+						}, function(err, newDoc) {
+
+							if(err) {
+								event.reply("POST_REGISTER_REPLY", {
+									status: "error",
+									message: "An error occured during the registration",
+								});
+							} else {
+								event.reply("POST_REGISTER_REPLY", {
+									status: "success",
+									message: "You account has been created successfully. You will be automatically redirected to the login page",
+								});
+							}
+						})
 					}
 				});
 			}
@@ -180,6 +203,11 @@ ipcMain.on("POST_LOGIN", (event, arg) => {
 					store.set("username", userDB.username);
 					store.set("uuid", userDB._id);
 					store.set("session", uuidv4());
+
+					options.find({uuid: userDB._id}, function(err, docs) {
+						let option = docs[0];
+						store.set("options", option.options)
+					})
 
 					let vaultKey = CryptoJS.PBKDF2(`${userDB.username}${arg.password}`, userDB.salt, { keySize: 8, iterations: 100000 }).toString();
 					store.set("vaultKey", vaultKey);
@@ -333,8 +361,8 @@ ipcMain.on("POST_EDIT_ACCOUNT", (event, arg) => {
 });
 
 
-ipcMain.on("STORE_GET", (event, arg) => {
-	event.reply("STORE_GET_REPLY", store.get(arg))
+ipcMain.on("GET_OPTIONS", (event, arg) => {
+	event.reply("GET_OPTIONS_REPLY", store.get("options"))
 })
 
 ipcMain.on("IS_CONNECTED", (event, arg) => {
@@ -354,4 +382,8 @@ ipcMain.on("LOGOUT", (event, arg) => {
 		status: "success",
 		message: "OK"
 	})
+})
+
+ipcMain.on("IS_CONNECTED", (event, arg) => {
+	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true)
 })

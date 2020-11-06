@@ -78,7 +78,21 @@ export default {
 		special: "updateChanges",
 	},
 	mounted() {
-		this.generateExample();
+		this.$electron.send("GET_OPTIONS");
+		this.$electron.once("GET_OPTIONS_REPLY", (event, arg) => {
+			this.length = arg.passwords.length;
+			if (arg.passwords.upper) {
+				this.cases.push("upper");
+			}
+			if (arg.passwords.lower) {
+				this.cases.push("lower");
+			}
+			if (arg.passwords.numeric) {
+				this.cases.push("numeric");
+			}
+			this.special = arg.passwords.special;
+			this.generateExample();
+		});
 	},
 	methods: {
 		generateExample() {
@@ -99,13 +113,13 @@ export default {
 		},
 		updateChanges() {
 			this.changes = true;
-			this.generateExample()
+			this.generateExample();
 		},
 		applyChanges() {
 			this.changes = false;
 
 			// finir la fonction ici
-		}
+		},
 	},
 };
 </script>
