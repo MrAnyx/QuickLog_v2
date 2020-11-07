@@ -1,6 +1,7 @@
 "use strict";
 
 import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { isBuffer } from "util";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 // import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 
@@ -149,32 +150,34 @@ ipcMain.on("POST_REGISTER", (event, arg) => {
 							message: "An error occured during the registration",
 						});
 					} else {
-						options.insert({
-							user: arg.username,
-							uuid: newDoc._id,
-							options: {
-								passwords: {
-									length: 25, // default length
-									upper: true,
-									lower: true,
-									special: true,
-									numeric: true
+						options.insert(
+							{
+								user: arg.username,
+								uuid: newDoc._id,
+								options: {
+									passwords: {
+										length: 25, // default length
+										upper: true,
+										lower: true,
+										special: true,
+										numeric: true,
+									},
+								},
+							},
+							function(err, newDoc) {
+								if (err) {
+									event.reply("POST_REGISTER_REPLY", {
+										status: "error",
+										message: "An error occured during the registration",
+									});
+								} else {
+									event.reply("POST_REGISTER_REPLY", {
+										status: "success",
+										message: "You account has been created successfully. You will be automatically redirected to the login page",
+									});
 								}
 							}
-						}, function(err, newDoc) {
-
-							if(err) {
-								event.reply("POST_REGISTER_REPLY", {
-									status: "error",
-									message: "An error occured during the registration",
-								});
-							} else {
-								event.reply("POST_REGISTER_REPLY", {
-									status: "success",
-									message: "You account has been created successfully. You will be automatically redirected to the login page",
-								});
-							}
-						})
+						);
 					}
 				});
 			}
@@ -204,10 +207,10 @@ ipcMain.on("POST_LOGIN", (event, arg) => {
 					store.set("uuid", userDB._id);
 					store.set("session", uuidv4());
 
-					options.find({uuid: userDB._id}, function(err, docs) {
+					options.find({ uuid: userDB._id }, function(err, docs) {
 						let option = docs[0];
-						store.set("options", option.options)
-					})
+						store.set("options", option.options);
+					});
 
 					let vaultKey = CryptoJS.PBKDF2(`${userDB.username}${arg.password}`, userDB.salt, { keySize: 8, iterations: 100000 }).toString();
 					store.set("vaultKey", vaultKey);
@@ -345,45 +348,88 @@ ipcMain.on("POST_EDIT_ACCOUNT", (event, arg) => {
 		},
 		{},
 		function(err, numReplaced) {
-			if(err) {
+			if (err) {
 				event.reply("POST_EDIT_ACCOUNT_REPLY", {
 					status: "error",
-					message: "An error occured, please try again"
-				})
+					message: "An error occured, please try again",
+				});
 			} else {
 				event.reply("POST_EDIT_ACCOUNT_REPLY", {
 					status: "success",
-					message: `${arg.plateform} account updated successfully`
-				})
+					message: `${arg.plateform} account updated successfully`,
+				});
 			}
 		}
 	);
 });
 
-
 ipcMain.on("GET_OPTIONS", (event, arg) => {
-	event.reply("GET_OPTIONS_REPLY", store.get("options"))
-})
+	event.reply("GET_OPTIONS_REPLY", store.get("options"));
+});
 
 ipcMain.on("IS_CONNECTED", (event, arg) => {
-	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true)
-})
+	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true);
+});
 
 ipcMain.on("LOGOUT", (event, arg) => {
-	try{
+	try {
 		store.clear();
-	} catch(e) {
+	} catch (e) {
 		event.reply("LOGOUT_REPLY", {
 			status: "error",
-			message: "An error occured during your disconnection"
-		})
+			message: "An error occured during your disconnection",
+		});
 	}
 	event.reply("LOGOUT_REPLY", {
 		status: "success",
-		message: "OK"
-	})
-})
+		message: "OK",
+	});
+});
 
 ipcMain.on("IS_CONNECTED", (event, arg) => {
-	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true)
-})
+	event.reply("IS_CONNECTED_REPLY", store.get("session") === undefined ? false : true);
+});
+
+ipcMain.on("POST_CHANGES", (event, arg) => {
+	options.update(
+		{ uuid: store.get("uuid") },
+		{
+			$set: {
+				options: {
+					passwords: {
+						length: arg['length'],
+						upper: arg.cases.includes("upper"),
+						lower: arg.cases.includes("lower"),
+						special: arg.special,
+						numeric: arg.cases.includes("numeric"),
+					},
+				},
+			},
+		},
+		{},
+		function(err, numReplaced) {
+			if (err) {
+				event.reply("POST_CHANGES_REPLY", {
+					status: "error",
+					message: "An error occured, please try again",
+				});
+			} else {
+				options.find({uuid: store.get("uuid")}, function (err, docs) {
+					if(err) {
+						event.reply("POST_CHANGES_REPLY", {
+							status: "error",
+							message: "An error occured, please try again",
+						});
+					} else {
+						store.set("options", docs[0].options)
+						event.reply("POST_CHANGES_REPLY", {
+							status: "success",
+							message: `Changes updated`,
+						});
+					}
+				})
+				
+			}
+		}
+	);
+});

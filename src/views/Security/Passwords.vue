@@ -140,12 +140,16 @@
 <script>
 const cryptoRandomString = require("crypto-random-string");
 const CryptoJS = require("crypto-js");
+const shuffle = require("shuffle-array");
 
 export default {
 	name: "Passwords",
 	data() {
 		return {
 			data: [],
+
+			settings: {},
+			stringlist: "",
 			drawer: false,
 
 			direction: "top",
@@ -209,6 +213,23 @@ export default {
 		this.$electron.once("GET_TABLE_REPLY", (event, arg) => {
 			this.data = arg;
 		});
+
+		this.$electron.send("GET_OPTIONS");
+		this.$electron.once("GET_OPTIONS_REPLY", (event, arg) => {
+			this.settings = arg.passwords;
+			if (this.settings.lower) {
+				this.stringlist += "abcdefghijklmnopqrstuvwxyz";
+			}
+			if (this.settings.upper) {
+				this.stringlist += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			}
+			if (this.settings.numeric) {
+				this.stringlist += "0123456789";
+			}
+			if (this.settings.special) {
+				this.stringlist += "!#$%&()*+,-./:;<=>?@[]^_{|}~";
+			}
+		});
 	},
 	methods: {
 		updateModal(buttonMessage, titleModal, account = null) {
@@ -255,8 +276,9 @@ export default {
 			});
 		},
 		autoGeneratePass() {
-			this.password = cryptoRandomString({ length: 25, type: "ascii-printable" });
+			this.password = cryptoRandomString({ length: this.settings['length'], characters: shuffle(this.stringlist.split("")).join("") });
 		},
+
 		checkboxUpdateValid() {
 			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
 				this.checkboxRules = [true || "Is required"];
