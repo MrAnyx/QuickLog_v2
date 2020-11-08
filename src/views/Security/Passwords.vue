@@ -278,7 +278,6 @@ export default {
 		autoGeneratePass() {
 			this.password = cryptoRandomString({ length: this.settings['length'], characters: shuffle(this.stringlist.split("")).join("") });
 		},
-
 		checkboxUpdateValid() {
 			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
 				this.checkboxRules = [true || "Is required"];
