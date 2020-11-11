@@ -29,7 +29,7 @@
 					<h6 class="text-h6 mt-5">Length</h6>
 					<v-slider v-model="value" step="1" class="align-center" max="40" min="8" thumb-label hide-details>
 						<template v-slot:thumb-label="{ value }">
-							<v-icon color="white">{{ weakness[Math.floor((value * 3) / 40)] }}</v-icon>
+							<v-icon color="white">{{ weakness[Math.floor((value * 3) / 41)] }}</v-icon>
 						</template>
 						<template v-slot:append>
 							<v-text-field v-model="value" class="mt-0 pt-0" max="40" min="8" hide-details single-line type="number" style="width: 60px"></v-text-field>

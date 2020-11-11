@@ -45,7 +45,13 @@
 		</v-simple-table>
 
 		<!-- sidebar right with info -->
-		<v-navigation-drawer v-model="drawer" absolute temporary right width="350px"></v-navigation-drawer>
+		<v-navigation-drawer v-model="drawer" absolute temporary right width="30vw" class="pa-5">
+			<h4 class="text-h4 text-center">Youtube</h4>
+			<v-divider class="mt-4"></v-divider>
+			<div class="mx-3 mt-5">
+				<!-- Mettre les infos du compte ici -->
+			</div>
+		</v-navigation-drawer>
 
 		<!-- modal pour ajouter un nouveau mdp -->
 		<v-dialog v-model="dialog" persistent max-width="50%">
@@ -199,6 +205,8 @@ export default {
 			snackbarStatus: "",
 			alert: false,
 			alertMessage: "",
+
+			info: {},
 		};
 	},
 
@@ -276,7 +284,7 @@ export default {
 			});
 		},
 		autoGeneratePass() {
-			this.password = cryptoRandomString({ length: this.settings['length'], characters: shuffle(this.stringlist.split("")).join("") });
+			this.password = cryptoRandomString({ length: this.settings["length"], characters: shuffle(this.stringlist.split("")).join("") });
 		},
 		checkboxUpdateValid() {
 			if ([this.userEnabled, this.emailEnabled].filter((s) => s === true).length > 0) {
@@ -287,6 +295,7 @@ export default {
 		},
 		displayInfo(element) {
 			this.drawer = !this.drawer;
+			this.info = element;
 		},
 		displayCustomCategoryFunction() {
 			if (this.select.includes("Custom")) {
@@ -371,8 +380,7 @@ export default {
 			this.alert = false;
 			this.alertMessage = "";
 			this.buttonModal = "";
-			this.titleModal = "",
-			this.functionButtonModal = "";
+			(this.titleModal = ""), (this.functionButtonModal = "");
 		},
 		usernameCheck() {
 			if (!this.userEnabled) {
