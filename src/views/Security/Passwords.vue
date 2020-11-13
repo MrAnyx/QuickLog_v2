@@ -45,11 +45,62 @@
 		</v-simple-table>
 
 		<!-- sidebar right with info -->
-		<v-navigation-drawer v-model="drawer" absolute temporary right width="30vw" class="pa-5">
-			<h4 class="text-h4 text-center">Youtube</h4>
+		<v-navigation-drawer v-model="drawer" absolute temporary right width="450px" class="pa-5">
+			<h4 class="text-h4 text-center">{{ info.plateform }}</h4>
 			<v-divider class="mt-4"></v-divider>
-			<div class="mx-3 mt-5">
-				<!-- Mettre les infos du compte ici -->
+			<div class="mt-8 px-1">
+				<v-row no-gutters v-if="info.username !== ''">
+					<v-col cols="4">
+						<v-subheader>Username</v-subheader>
+					</v-col>
+					<v-col cols="8">
+						<v-text-field :value="info.username" solo readonly></v-text-field>
+					</v-col>
+				</v-row>
+				<v-row no-gutters v-if="info.email !== ''">
+					<v-col cols="4">
+						<v-subheader>Email</v-subheader>
+					</v-col>
+					<v-col cols="8">
+						<v-text-field :value="info.email" solo readonly></v-text-field>
+					</v-col>
+				</v-row>
+				<v-row no-gutters v-if="info.categories">
+					<v-col cols="4">
+						<v-subheader>Categories</v-subheader>
+					</v-col>
+					<v-col cols="8">
+						<v-chip-group column>
+							<v-chip v-for="category in info.categories" :key="category" color="primary">
+								{{ category }}
+							</v-chip>
+							<v-chip v-for="custom in info.custom" :key="custom">
+								{{ custom }}
+							</v-chip>
+						</v-chip-group>
+					</v-col>
+				</v-row>
+				<v-row no-gutters class="mt-7">
+					<v-col cols="4">
+						<v-subheader>Password</v-subheader>
+					</v-col>
+					<v-col cols="8">
+						<v-text-field type="password" value="•••••••••••••••••••••••••••" solo readonly>
+							<template v-slot:append-outer>
+								<v-tooltip bottom>
+									<template v-slot:activator="{ on, attrs }">
+										<v-btn text v-bind="attrs" v-on="on" @click.stop="copyPassword(info)">
+											<v-icon>
+												mdi-clipboard-outline
+											</v-icon>
+										</v-btn>
+									</template>
+									<span>Copy</span>
+								</v-tooltip>
+							</template>
+						</v-text-field>
+					</v-col>
+				</v-row>
 			</div>
 		</v-navigation-drawer>
 
@@ -419,7 +470,23 @@ export default {
 				}
 			});
 		},
-		editPass(account) {},
+		copyPassword(account) {
+			this.$electron.send("GET_PASSWORD", account._id);
+			this.$electron.once("GET_PASSWORD_REPLY", (event, arg) => {
+				if (arg.status === "error") {
+					this.snackbar = true;
+					this.snackbarMessage = arg.message;
+					this.snackbarStatus = "error";
+				} else {
+					let input = document.createElement("input")
+					input.value = arg.message;
+					document.body.appendChild(input);
+					input.select();
+					document.execCommand("copy");
+					document.body.removeChild(input)
+				}
+			});
+		},
 	},
 };
 </script>

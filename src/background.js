@@ -397,7 +397,7 @@ ipcMain.on("POST_CHANGES", (event, arg) => {
 			$set: {
 				options: {
 					passwords: {
-						length: arg['length'],
+						length: arg["length"],
 						upper: arg.cases.includes("upper"),
 						lower: arg.cases.includes("lower"),
 						special: arg.special,
@@ -414,22 +414,39 @@ ipcMain.on("POST_CHANGES", (event, arg) => {
 					message: "An error occured, please try again",
 				});
 			} else {
-				options.find({uuid: store.get("uuid")}, function (err, docs) {
-					if(err) {
+				options.find({ uuid: store.get("uuid") }, function(err, docs) {
+					if (err) {
 						event.reply("POST_CHANGES_REPLY", {
 							status: "error",
 							message: "An error occured, please try again",
 						});
 					} else {
-						store.set("options", docs[0].options)
+						store.set("options", docs[0].options);
 						event.reply("POST_CHANGES_REPLY", {
 							status: "success",
 							message: `Changes updated`,
 						});
 					}
-				})
-				
+				});
 			}
 		}
 	);
+});
+
+ipcMain.on("GET_PASSWORD", (event, arg) => {
+	data.find({ _id: arg }, function(err, docs) {
+		if (err) {
+			event.reply("GET_PASSWORD_REPLY", {
+				status: "error",
+				message: "An error occured, please try again",
+			});
+		} else {
+			let bytes = CryptoJS.AES.decrypt(docs[0].password, store.get("vaultKey"));
+			let password = bytes.toString(CryptoJS.enc.Utf8);
+			event.reply("GET_PASSWORD_REPLY", {
+				status: "success",
+				message: password
+			});
+		}
+	});
 });
