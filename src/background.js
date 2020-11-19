@@ -249,6 +249,7 @@ ipcMain.on("IS_USER_CONNECTED", (event, arg) => {
 	}
 });
 
+
 // ? New account
 ipcMain.on("POST_NEW_ACCOUNT", (event, arg) => {
 	data.find({ uuid: CryptoJS.SHA3(`${arg.plateform}${arg.username}${arg.email}${arg.password}${store.get("uuid")}${store.get("username")}}`).toString() }, function(err, docs) {
