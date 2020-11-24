@@ -39,13 +39,17 @@
 					<h6 class="text-h6 mt-5">Example</h6>
 					<v-text-field v-model="example" readonly solo single-line></v-text-field>
 				</v-tab-item>
-				<v-tab-item>
-					<v-card flat>
-						<v-card-text>
-							<p>Fusce a quam. Phasellus nec sem in justo pellentesque facilisis. Nam eget dui. Proin viverra, ligula sit amet ultrices semper, ligula arcu tristique sapien, a accumsan nisi mauris ac eros. In dui magna, posuere eget, vestibulum et, tempor auctor, justo.</p>
-							<p class="mb-0">Cras sagittis. Phasellus nec sem in justo pellentesque facilisis. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nam at tortor in tellus interdum sagittis.</p>
-						</v-card-text>
-					</v-card>
+				<v-tab-item class="pa-5">
+					<h6 class="text-h6">Credentials</h6>
+					<v-form ref="form" v-model="validUsername">
+						<v-text-field required type="text" label="New username" prepend-icon="mdi-account-outline" v-model="username" :rules="usernameRules">
+							<template v-slot:append-outer>
+								<v-btn text color="primary" @click="updateUsername()">
+									Update
+								</v-btn>
+							</template>
+						</v-text-field>
+					</v-form>
 				</v-tab-item>
 			</v-tabs>
 
@@ -86,6 +90,12 @@ export default {
 			snackbar: false,
 			snackbarStatus: "",
 			snackbarMessage: "",
+
+			// --------- Account -------------
+
+			validUsername: true,
+			username: "",
+			usernameRules: [(v) => !!v || "Username is required", (v) => v.length <= 50 || "Username must be less than 50 characters"],
 		};
 	},
 	mounted() {
@@ -107,6 +117,16 @@ export default {
 		});
 	},
 	methods: {
+		updateUsername() {
+			/* update password here
+			
+			TODO: Mettre à jour le fichier auth / options
+			TODO: Modifier le fichier data
+			TODO: Modifier l'attribut 'uuid' et 'owner.username' dans le fichier data
+			TODO: Modifier le localStorage avec les nouvelles infos
+			
+			*/
+		},
 		enableWatcher() {
 			this.$watch("value", function(oldVal, newVal) {
 				this.changes = true;
@@ -138,7 +158,7 @@ export default {
 			this.example = cryptoRandomString({ length: this.value, characters: shuffle(this.stringlist.split("")).join("") });
 		},
 		applyChanges() {
-			this.$refs.form.validate()
+			this.$refs.form.validate();
 			this.$electron.send("POST_CHANGES", {
 				cases: this.cases,
 				length: this.value,
